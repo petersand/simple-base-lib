@@ -1,0 +1,66 @@
+LibUsb-Win32 Change Log
+V1.14.1.3 (06/12/2010)
+=======================
+* Remove get_configuration() request from usb_open().  This caused claim
+  interface to fail when used as a filter driver.
+  
+
+PREVIOUS VERSIONS
+====================
+
+V1.14.1.0 (06/01/2010)
+=======================
+* Updated logging functions and standardized log message display format.
+
+* Updated inf-wizard to use the new directory format for the libusb-win32
+  binaries.
+
+* Updated package directories to reflect the winddk BUILDARCH env variable.
+  (i64 := ia64, x64 := amd64)
+  
+* Added request to get the current configuration in usb_open().
+
+* Fixed 2960644 (reported by farthen) crash on shutdown with x64 based
+  systems while using inf files for each libusb device.
+
+* Added additional log message only included in debug/chk builds.
+  
+* Updated default log levels to highest verbose level for debug builds.
+
+* Added test signing support to the libusb-win32 make.cmd. This allows
+  libusb0.sys and libusb0.dll to be signed with a digital signature.
+  (see make.cmd for mmore details)
+
+* Added MSVC 2008 project files
+
+* Moved version defines to an include file (libusb_version.h)
+  This file is generated from libusb_version_h.in with "make.cmd makever"
+
+* Removed all "dist" commands from cyg/mingw makefile.  Instead use "make.cmd"
+  in the "ddk_make" directory.
+
+* Fixed filter setup not running in 64bit mode
+
+* Fixed 64bit inf-wizard, testlibusb-win builds
+
+* Added set initial config value #1 when the driver is not a filter.
+  optionally, the initial configuration value can be specified in the inf
+  file: HKR,,"InitialConfigValue",0x00010001,<your config value>
+
+* Added support for querying device registry keys 
+ (LIBUSB_IOCTL_GET_CUSTOM_REG_PROPERTY)
+
+* Added support for querying device properties 
+ (LIBUSB_IOCTL_GET_DEVICE_PROPERTY)
+
+* Fixed possible race condition in kernel add_device()
+
+* Updated default ddk build version number to 1.1.14.0 to facilitate
+  Microsoft WHQL submission.
+
+* Added DDK build distribution system.  Official libusb-win32 releases 
+ (after 0.1.12.2) are built using Microsoft's WinDDK.  (see make.cmd)
+
+* Fixed 2658937 (reported by Tim Roberts) The libusb-win32 driver always
+  acts as a power policy owner.
+
