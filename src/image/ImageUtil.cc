@@ -608,6 +608,7 @@ template aptr<ImageColorF> load<ImageColorF>( const String &fileName );
 
 // struct used to keep track of pending points for flood fill
 struct FillNode {
+	FillNode() : x( 0 ), y( 0 ) {};
 	int x;
 	int y;
 };
@@ -616,12 +617,12 @@ struct FillNode {
 /// fills starting at the given point, all values within the given range;
 /// the fill value must *not* be within the fill range
 int floodFill( ImageGrayU &img, int minRegionValue, int maxRegionValue, int fillValue, int x, int y, 
-			   float *xCentRet, float *yCentRet, int *xMinRet, int *xMaxRet, int *yMinRet, int *yMaxRet ) {
+			   float *xCentRet, float *yCentRet, int *xMinRet, int *xMaxRet, int *yMinRet, int *yMaxRet, int maxSize ) {
 
-	// alloc stack
+	// compute max size of filled area (if not specified)
 	int width = img.width(), height = img.height();
-	int stackSize = width * height * 3;
-	FillNode *fillStack = new FillNode[ stackSize ];
+	if (maxSize <= 0)
+		maxSize = width * height;
 
 	// region stats
 	int xMin = width, xMax = 0;
@@ -631,6 +632,7 @@ int floodFill( ImageGrayU &img, int minRegionValue, int maxRegionValue, int fill
 	bool getStats = xCentRet || yCentRet || xMinRet || xMaxRet || yMinRet || yMaxRet;
 
 	// add first node to stack
+	Vector<FillNode> fillStack(1);
 	fillStack[ 0 ].x = x;
 	fillStack[ 0 ].y = y;
 	int stackTop = 1;
@@ -656,6 +658,18 @@ int floodFill( ImageGrayU &img, int minRegionValue, int maxRegionValue, int fill
 					if (cy < yMin) yMin = cy;
 					if (cy > yMax) yMax = cy;
 				}
+				if (count >= maxSize) {
+					break;
+				}
+
+				// extend stack if needed
+				// (this is somewhat of a hack, taking advantage of vector resizing provided by append() function)
+				if (stackTop + 4 > fillStack.length()) {
+					fillStack.append(FillNode());
+					fillStack.append(FillNode());
+					fillStack.append(FillNode());
+					fillStack.append(FillNode());
+				}
 
 				// recurse: push neighbors
 				fillStack[ stackTop ].x = cx + 1;
@@ -670,15 +684,9 @@ int floodFill( ImageGrayU &img, int minRegionValue, int maxRegionValue, int fill
 				fillStack[ stackTop ].x = cx;
 				fillStack[ stackTop ].y = cy - 1;
 				stackTop++;
-				if (stackTop > stackSize) {
-					fatalError( "fillRegion stack overflow" );
-				}
 			}
 		}
 	}
-
-	// clean up
-	delete [] fillStack;
 
 	// return results
 	if (xCentRet) *xCentRet = (float) xSum / (float) count;

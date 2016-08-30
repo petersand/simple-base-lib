@@ -160,7 +160,7 @@ template <typename ImageType> aptr<ImageType> load( const String &fileName );
 int floodFill( ImageGrayU &img, int minRegionColor, int maxRegionColor, int fillValue, 
 			   int x, int y, float *xCentRet = NULL, float *yCentRet = NULL, 
 			   int *xMinRet = NULL, int *xMaxRet = NULL, 
-			   int *yMinRet = NULL, int *yMaxRet = NULL );
+			   int *yMinRet = NULL, int *yMaxRet = NULL, int maxSize = -1 );
 
 
 /// keep only mask components that have a pixel count within the given range (assumes mask has only 0 and 255 values)
