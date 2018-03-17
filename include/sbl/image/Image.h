@@ -2,8 +2,7 @@
 #define _SBL_IMAGE_H_
 #include <sbl/core/String.h>
 #ifdef USE_OPENCV
-    #include <opencv2/core/types_c.h>
-	CVAPI(void) cvReleaseImage( IplImage** image ); // we need this, but cxcore seems to be incompatible with something else (windows?)
+	#include <opencv2/core.hpp>
 #else
 	#include <string.h> // for memcpy
 #endif
