@@ -17,8 +17,8 @@ namespace sbl {
 /// extract sub-image
 // fix(clean): should unify with grayscale version
 template<> aptr<ImageColorU> crop( const ImageColorU &input, int xMin, int xMax, int yMin, int yMax ) {
-	assertDebug( xMin > 0 && xMax < input.width() );
-	assertDebug( yMin > 0 && yMax < input.height() );
+	assertDebug( xMin >= 0 && xMax < input.width() );
+	assertDebug( yMin >= 0 && yMax < input.height() );
 	int newWidth = xMax - xMin + 1;
 	int newHeight = yMax - yMin + 1;
 	aptr<ImageColorU> output( new ImageColorU( newWidth, newHeight ) );
@@ -33,8 +33,8 @@ template<> aptr<ImageColorU> crop( const ImageColorU &input, int xMin, int xMax,
 /// extract sub-image
 // fix(faster): use memcpy
 template <typename ImageType> aptr<ImageType> crop( const ImageType &input, int xMin, int xMax, int yMin, int yMax ) {
-	assertDebug( xMin > 0 && xMax < input.width() );
-	assertDebug( yMin > 0 && yMax < input.height() );
+	assertDebug( xMin >= 0 && xMax < input.width() );
+	assertDebug( yMin >= 0 && yMax < input.height() );
 	int newWidth = xMax - xMin + 1;
 	int newHeight = yMax - yMin + 1;
 	aptr<ImageType> output( new ImageType( newWidth, newHeight ) );
