@@ -18,6 +18,7 @@ public:
 
     /// create a point
     Point2( double xIn, double yIn ) : x( xIn ), y( yIn ) {}
+	Point2() : x(0), y(0) {}  // need default constructor to make vectors of points
 
     /// coordinates
     double x;
