@@ -34,7 +34,7 @@ public:
     /// basic constructor; see File constructor for more info
     TaggedFile( const String &fileName, FileOpenMode mode, FileOpenType type )
                    : File( fileName, mode, type ) {
-        assertAlways( type == FILE_BINARY );
+        assertAlways( type == FileOpenType::FILE_BINARY );
     }
 	virtual ~TaggedFile() {}
 

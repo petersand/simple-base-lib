@@ -11,7 +11,7 @@ void initFile();
 
 
 /// file open modes
-enum FileOpenMode {
+enum class FileOpenMode {
 	FILE_READ,
 	FILE_WRITE,
 	FILE_APPEND
@@ -19,7 +19,7 @@ enum FileOpenMode {
 
 
 /// file open types
-enum FileOpenType {
+enum class FileOpenType {
 	FILE_TEXT,
 	FILE_BINARY,
 	FILE_GZIP_BINARY,
@@ -37,7 +37,7 @@ class File {
 public:
 
 	/// open a file
-	explicit File( const String &fileName = "", FileOpenMode mode = FILE_READ, FileOpenType type = FILE_TEXT );
+	explicit File( const String &fileName = "", FileOpenMode mode = FileOpenMode::FILE_READ, FileOpenType type = FileOpenType::FILE_TEXT );
 
 	/// close the file
 	virtual ~File();

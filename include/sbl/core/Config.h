@@ -8,7 +8,7 @@ namespace sbl {
 
 
 // config entry types are currently used mostly for display/editing
-enum ConfigEntryType {
+enum class ConfigEntryType {
 	CONFIG_ENTRY_TEXT,
 	CONFIG_ENTRY_BOOL,
 	CONFIG_ENTRY_SECTION,
@@ -28,7 +28,7 @@ class ConfigEntry {
 public:
 
     /// basic constructor
-    ConfigEntry() { type = CONFIG_ENTRY_TEXT; }
+    ConfigEntry() { type = ConfigEntryType::CONFIG_ENTRY_TEXT; }
 
     // public members
 	// fix(clean): make private
@@ -66,15 +66,15 @@ public:
     inline VectorF readVectorF( const String &name ) { return splitNumbersF( readString( name, "" ) ); }
 
 	/// write value to parameter with given name
-	inline void writeBool( const String &name, bool val ) { writeString( name, sprintF( "%d", (int) val ), CONFIG_ENTRY_BOOL ); }
+	inline void writeBool( const String &name, bool val ) { writeString( name, sprintF( "%d", (int) val ), ConfigEntryType::CONFIG_ENTRY_BOOL ); }
 	inline void writeInt( const String &name, int val ) { writeString( name, sprintF( "%d", val ) ); }
 	inline void writeFloat( const String &name, float val ) { writeString( name, sprintF( "%f", val ) ); }
 	inline void writeDouble( const String &name, double val ) { writeString( name, sprintF( "%f", val ) ); }
-	void writeString( const String &name, const String &val, ConfigEntryType type = CONFIG_ENTRY_TEXT );
+	void writeString( const String &name, const String &val, ConfigEntryType type = ConfigEntryType::CONFIG_ENTRY_TEXT );
     inline void writeStrings( const String &name, const Array<String> &strArr ) { writeString( name, join( strArr, "," ) ); }
     inline void writeVectorI( const String &name, const VectorI &vector ) { writeString( name, toString( vector ) ); }
     inline void writeVectorF( const String &name, const VectorF &vector ) { writeString( name, toString( vector, 0, 1000, "%f" ) ); }
-	inline void writeSection( const String &name ) { writeString( name, "", CONFIG_ENTRY_SECTION ); }
+	inline void writeSection( const String &name ) { writeString( name, "", ConfigEntryType::CONFIG_ENTRY_SECTION ); }
 
 	/// checks whether entry exists in this config
 	inline bool entryExists( const String &name ) const { return findEntry( name ) ? true : false; }
