@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{65595B90-2FDF-44C5-98C7-5D6EFCF9C48B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.27130.2020</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>Debug\</OutDir>
+    <IntDir>Debug\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>Release\</OutDir>
+    <IntDir>Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../include;..;$(WINSDK)/include;$(OPENCV)/include;$(ZLIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_OPENCV;USE_CDT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../lib/sbld.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../include;..;$(WINSDK)/include;$(OPENCV)/include;$(ZLIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_OPENCV;USE_CDT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../lib/sbld.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../include;..;$(WINSDK)/include;$(OPENCV)/include;$(ZLIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_OPENCV;USE_CDT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../lib/sbl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../include;..;$(WINSDK)/include;$(OPENCV)/include;$(ZLIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_OPENCV;USE_CDT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>../lib/sbl.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\sbl\core\Array.h" />
+    <ClInclude Include="..\include\sbl\core\Command.h" />
+    <ClInclude Include="..\include\sbl\core\Config.h" />
+    <ClInclude Include="..\include\sbl\core\Dict.h" />
+    <ClInclude Include="..\include\sbl\core\Display.h" />
+    <ClInclude Include="..\include\sbl\core\File.h" />
+    <ClInclude Include="..\include\sbl\core\Init.h" />
+    <ClInclude Include="..\include\sbl\core\PathConfig.h" />
+    <ClInclude Include="..\include\sbl\core\Pointer.h" />
+    <ClInclude Include="..\include\sbl\core\String.h" />
+    <ClInclude Include="..\include\sbl\core\StringUtil.h" />
+    <ClInclude Include="..\include\sbl\core\Table.h" />
+    <ClInclude Include="..\include\sbl\core\UnitTest.h" />
+    <ClInclude Include="..\include\sbl\image\Filter.h" />
+    <ClInclude Include="..\include\sbl\image\Image.h" />
+    <ClInclude Include="..\include\sbl\image\ImageDraw.h" />
+    <ClInclude Include="..\include\sbl\image\ImageRegister.h" />
+    <ClInclude Include="..\include\sbl\image\ImageSeqUtil.h" />
+    <ClInclude Include="..\include\sbl\image\ImageTransform.h" />
+    <ClInclude Include="..\include\sbl\image\ImageUtil.h" />
+    <ClInclude Include="..\include\sbl\image\MotionField.h" />
+    <ClInclude Include="..\include\sbl\image\MotionFieldSeq.h" />
+    <ClInclude Include="..\include\sbl\image\MotionFieldUtil.h" />
+    <ClInclude Include="..\include\sbl\image\Track.h" />
+    <ClInclude Include="..\include\sbl\image\Video.h" />
+    <ClInclude Include="..\include\sbl\math\ConfigOptimizer.h" />
+    <ClInclude Include="..\include\sbl\math\Geometry.h" />
+    <ClInclude Include="..\include\sbl\math\KMeans.h" />
+    <ClInclude Include="..\include\sbl\math\MathUtil.h" />
+    <ClInclude Include="..\include\sbl\math\Matrix.h" />
+    <ClInclude Include="..\include\sbl\math\MatrixUtil.h" />
+    <ClInclude Include="..\include\sbl\math\Optimizer.h" />
+    <ClInclude Include="..\include\sbl\math\OptimizerUtil.h" />
+    <ClInclude Include="..\include\sbl\math\Tensor.h" />
+    <ClInclude Include="..\include\sbl\math\TensorUtil.h" />
+    <ClInclude Include="..\include\sbl\math\TimeSeries.h" />
+    <ClInclude Include="..\include\sbl\math\Triangulation.h" />
+    <ClInclude Include="..\include\sbl\math\Vector.h" />
+    <ClInclude Include="..\include\sbl\math\VectorUtil.h" />
+    <ClInclude Include="..\include\sbl\other\CodeCheck.h" />
+    <ClInclude Include="..\include\sbl\other\DrawingLayer.h" />
+    <ClInclude Include="..\include\sbl\other\ImageDrawingLayer.h" />
+    <ClInclude Include="..\include\sbl\other\Plot.h" />
+    <ClInclude Include="..\include\sbl\other\Scripting.h" />
+    <ClInclude Include="..\include\sbl\other\SVG.h" />
+    <ClInclude Include="..\include\sbl\other\TaggedFile.h" />
+    <ClInclude Include="..\include\sbl\system\FileSystem.h" />
+    <ClInclude Include="..\include\sbl\system\Microcontroller.h" />
+    <ClInclude Include="..\include\sbl\system\SerialPort.h" />
+    <ClInclude Include="..\include\sbl\system\Signal.h" />
+    <ClInclude Include="..\include\sbl\system\Socket.h" />
+    <ClInclude Include="..\include\sbl\system\Timer.h" />
+    <ClInclude Include="..\include\sbl\system\TimeUtil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\external\CDT\CDT.cc" />
+    <ClCompile Include="..\src\core\Command.cc" />
+    <ClCompile Include="..\src\core\Config.cc" />
+    <ClCompile Include="..\src\core\Display.cc" />
+    <ClCompile Include="..\src\core\File.cc" />
+    <ClCompile Include="..\src\core\Init.cc" />
+    <ClCompile Include="..\src\core\PathConfig.cc" />
+    <ClCompile Include="..\src\core\String.cc" />
+    <ClCompile Include="..\src\core\StringUtil.cc" />
+    <ClCompile Include="..\src\core\Table.cc" />
+    <ClCompile Include="..\src\core\UnitTest.cc" />
+    <ClCompile Include="..\src\image\Filter.cc" />
+    <ClCompile Include="..\src\image\ImageDraw.cc" />
+    <ClCompile Include="..\src\image\ImageRegister.cc" />
+    <ClCompile Include="..\src\image\ImageSeqUtil.cc" />
+    <ClCompile Include="..\src\image\ImageTransform.cc" />
+    <ClCompile Include="..\src\image\ImageUtil.cc" />
+    <ClCompile Include="..\src\image\MotionField.cc" />
+    <ClCompile Include="..\src\image\MotionFieldSeq.cc" />
+    <ClCompile Include="..\src\image\MotionFieldUtil.cc" />
+    <ClCompile Include="..\src\image\Track.cc" />
+    <ClCompile Include="..\src\image\Video.cc" />
+    <ClCompile Include="..\src\math\ConfigOptimizer.cc" />
+    <ClCompile Include="..\src\math\Geometry.cc" />
+    <ClCompile Include="..\src\math\KMeans.cc" />
+    <ClCompile Include="..\src\math\MathUtil.cc" />
+    <ClCompile Include="..\src\math\MatrixUtil.cc" />
+    <ClCompile Include="..\src\math\Optimizer.cc" />
+    <ClCompile Include="..\src\math\OptimizerUtil.cc" />
+    <ClCompile Include="..\src\math\TensorUtil.cc" />
+    <ClCompile Include="..\src\math\TimeSeries.cc" />
+    <ClCompile Include="..\src\math\Triangulation.cc" />
+    <ClCompile Include="..\src\math\VectorUtil.cc" />
+    <ClCompile Include="..\src\other\CodeCheck.cc" />
+    <ClCompile Include="..\src\other\DrawingLayer.cc" />
+    <ClCompile Include="..\src\other\ImageDrawingLayer.cc" />
+    <ClCompile Include="..\src\other\Plot.cc" />
+    <ClCompile Include="..\src\other\Scripting.cc" />
+    <ClCompile Include="..\src\other\SVG.cc" />
+    <ClCompile Include="..\src\other\TaggedFile.cc" />
+    <ClCompile Include="..\src\system\FileSystem.cc" />
+    <ClCompile Include="..\src\system\Microcontroller.cc" />
+    <ClCompile Include="..\src\system\SerialPort.cc" />
+    <ClCompile Include="..\src\system\Signal.cc" />
+    <ClCompile Include="..\src\system\Socket.cc" />
+    <ClCompile Include="..\src\system\Timer.cc" />
+    <ClCompile Include="..\src\system\TimeUtil.cc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

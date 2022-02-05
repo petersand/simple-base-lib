@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\math">
+      <UniqueIdentifier>{23230a9d-f1ea-4ea3-9774-491e80e1d4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\image">
+      <UniqueIdentifier>{98e540cc-d289-4551-878d-b2092a87d975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{b692a7f1-7726-4129-b3ba-349b83725d4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\system">
+      <UniqueIdentifier>{96d476e6-7c5a-428f-bea2-09a950b4414b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\other">
+      <UniqueIdentifier>{b9cf3ae9-51ea-4393-be4b-21d07ac9cdeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{23b50aec-4b7f-4a8d-8b78-bdd4d840c036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\image">
+      <UniqueIdentifier>{7da92bda-853b-48cb-8301-d5c5520e9d90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{065a0933-4aea-4637-a603-8737fcd7bf42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\system">
+      <UniqueIdentifier>{965d5f98-ce5d-4d36-8a67-83fa5b822069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\other">
+      <UniqueIdentifier>{c4b0d40d-2649-4d89-994b-62638aa9f115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\external">
+      <UniqueIdentifier>{1403d1cc-11f2-44fb-a933-9cd5f747eac2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\sbl\math\ConfigOptimizer.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Geometry.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\KMeans.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\MathUtil.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Matrix.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\MatrixUtil.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Optimizer.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\OptimizerUtil.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Tensor.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\TensorUtil.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\TimeSeries.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Triangulation.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\Vector.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\math\VectorUtil.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\Filter.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\Image.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\ImageDraw.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\ImageRegister.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\ImageSeqUtil.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\ImageTransform.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\ImageUtil.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\MotionField.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\MotionFieldSeq.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\MotionFieldUtil.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\Track.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\image\Video.h">
+      <Filter>Header Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Array.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Command.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Config.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Dict.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Display.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\File.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Init.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\PathConfig.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Pointer.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\String.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\StringUtil.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\Table.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\core\UnitTest.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\FileSystem.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\Microcontroller.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\SerialPort.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\Signal.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\Socket.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\Timer.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\TimeUtil.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\CodeCheck.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\DrawingLayer.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\ImageDrawingLayer.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\Plot.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\Scripting.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\SVG.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\other\TaggedFile.h">
+      <Filter>Header Files\other</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\math\ConfigOptimizer.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\Geometry.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\KMeans.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\MathUtil.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\MatrixUtil.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\Optimizer.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\OptimizerUtil.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\TensorUtil.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\TimeSeries.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\Triangulation.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\math\VectorUtil.cc">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\Filter.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\ImageDraw.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\ImageRegister.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\ImageSeqUtil.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\ImageTransform.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\ImageUtil.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\MotionField.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\MotionFieldSeq.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\MotionFieldUtil.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\Track.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\image\Video.cc">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Command.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Config.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Display.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\File.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Init.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\PathConfig.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\String.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\StringUtil.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\Table.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\UnitTest.cc">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\FileSystem.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\Microcontroller.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\SerialPort.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\Signal.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\Socket.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\Timer.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\TimeUtil.cc">
+      <Filter>Source Files\system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\CodeCheck.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\DrawingLayer.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\ImageDrawingLayer.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\Plot.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\Scripting.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\SVG.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\other\TaggedFile.cc">
+      <Filter>Source Files\other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\external\CDT\CDT.cc">
+      <Filter>Source Files\external</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
