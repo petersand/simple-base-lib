@@ -39,21 +39,21 @@ File::~File() {
 /// open a file
 void File::open( const String &fileName, FileOpenMode mode, FileOpenType type ) {
 	assertAlways( m_file == NULL );
-	m_binary = (type == FILE_BINARY || type == FILE_GZIP_BINARY);
+	m_binary = (type == FileOpenType::FILE_BINARY || type == FileOpenType::FILE_GZIP_BINARY);
 	const char *modeStr = NULL;
-	if (mode == FILE_APPEND)
-		modeStr = type == FILE_TEXT ? "a" : "ab";
-	else if (mode == FILE_WRITE)
-		modeStr = type == FILE_TEXT ? "w" : "wb";
+	if (mode == FileOpenMode::FILE_APPEND)
+		modeStr = type == FileOpenType::FILE_TEXT ? "a" : "ab";
+	else if (mode == FileOpenMode::FILE_WRITE)
+		modeStr = type == FileOpenType::FILE_TEXT ? "w" : "wb";
 	else
-		modeStr = type == FILE_TEXT ? "r" : "rb";
+		modeStr = type == FileOpenType::FILE_TEXT ? "r" : "rb";
 	m_file = fopen( fileName.c_str(), modeStr );
 #ifdef USE_ZLIB
 	if (type == FILE_GZIP_BINARY && m_file) {
 		m_gzFile = gzopen( fileName.c_str(), modeStr ); // fix(clean): don't also open as m_file
 	}
 #else
-	assertAlways( type != FILE_GZIP_BINARY );
+	assertAlways( type != FileOpenType::FILE_GZIP_BINARY );
 #endif
 }
 
@@ -231,7 +231,7 @@ bool testFile( FileOpenType type ) {
 	String fileName = "test.dat";
 
 	// write data
-	File outFile( fileName, FILE_WRITE, type );
+	File outFile( fileName, FileOpenMode::FILE_WRITE, type );
 	unitAssert( outFile.openSuccess() );
 	outFile.writeBool( false );
 	outFile.writeUChar( 'A' );
@@ -242,7 +242,7 @@ bool testFile( FileOpenType type ) {
 	outFile.close();
 
 	// read data
-	File inFile( fileName, FILE_READ, type );
+	File inFile( fileName, FileOpenMode::FILE_READ, type );
 	unitAssert( inFile.openSuccess() );
 	unitAssert( inFile.readBool() == false );
 	unitAssert( inFile.readUChar() == 'A' );
@@ -256,9 +256,9 @@ bool testFile( FileOpenType type ) {
 
 // test the file class
 bool testFile() {
-	unitAssert( testFile( FILE_BINARY ) );
-	unitAssert( testFile( FILE_TEXT ) );
-	unitAssert( testFile( FILE_GZIP_BINARY ) );
+	unitAssert(testFile(FileOpenType::FILE_BINARY));
+	unitAssert(testFile(FileOpenType::FILE_TEXT));
+	unitAssert(testFile(FileOpenType::FILE_GZIP_BINARY));
 	return true;
 }
 

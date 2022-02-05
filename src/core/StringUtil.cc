@@ -112,7 +112,7 @@ String join( const Array<String> &strArr, const String &joiner ) {
 
 /// load a file into an array of strings (one per line)
 Array<String> loadStrings( const String &fileName, bool includeComments ) {
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
 	Array<String> strArray;
 	while (file.endOfFile() == false) {
 		String line = file.readLine();

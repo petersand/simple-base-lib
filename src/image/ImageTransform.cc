@@ -174,15 +174,15 @@ template aptr<ImageColorU> rotate180( const ImageColorU &input );
 
 /// rotate 90 degrees (counter-clockwise)
 // fix(clean): use opencv
-template <typename ImageType> aptr<ImageType> rotate90( const ImageType &input ) {
+template <typename ImageType> aptr<ImageType> rotate90(const ImageType& input) {
 	int newWidth = input.height();
 	int newHeight = input.width();
 	int cc = input.channelCount();
-	aptr<ImageType> output( new ImageType( newWidth, newHeight ) );
+	aptr<ImageType> output(new ImageType(newWidth, newHeight));
 	for (int y = 0; y < newHeight; y++) {
 		for (int x = 0; x < newWidth; x++) {
-			for (int c = 0; c< cc ; c++) {
-				output->data( x, y, c ) = input.data( y, newWidth - x , c );
+			for (int c = 0; c < cc; c++) {
+				output->data(x, y, c) = input.data(y, newWidth - x - 1, c);
 			}
 		}
 	}

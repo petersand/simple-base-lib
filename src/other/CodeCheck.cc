@@ -59,7 +59,7 @@ void checkFile( const String &fileName, Table &table ) {
 	int funcLen = 0;
 
 	// loop over the file
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		while (file.endOfFile() == false) {
 			String line = file.readLine();
@@ -225,12 +225,12 @@ void distributeCode( Config &conf ) {
 		String inFileName = fileNames[ fileIndex ];
 		String outFileName = destPath + inFileName.rightOf( sourcePath.length() - 1 );
 		disp( 1, "%s->%s", inFileName.c_str(), outFileName.c_str() );
-		File inFile( inFileName, FILE_READ, FILE_TEXT );
-		File outFile( outFileName, FILE_WRITE, FILE_TEXT );
+		File inFile( inFileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
+		File outFile( outFileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 
         // add license
 		if (inFileName.contains( "external" ) == false) {
-	        File licenseFile( sourcePath + "../../license-short.txt", FILE_READ, FILE_TEXT ); // fix(later): path
+	        File licenseFile( sourcePath + "../../license-short.txt", FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT ); // fix(later): path
 		    while (licenseFile.endOfFile() == false) 
 			    outFile.writeF( "%s\x0A", licenseFile.readLine().c_str() ); // write linefeed only at end of line
 		}

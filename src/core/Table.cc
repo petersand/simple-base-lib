@@ -465,7 +465,7 @@ void Table::sort( const TableColumn &col, int sortDir ) {
 
 /// load from tagged file
 void Table::load( const String &fileName ) {
-	TaggedFile file( fileName, FILE_READ, FILE_BINARY );
+	TaggedFile file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
         int tag = 0;
         do {
@@ -482,7 +482,7 @@ void Table::load( const String &fileName ) {
 
 /// save to tagged file
 void Table::save( const String &fileName ) const {
-	TaggedFile file( fileName, FILE_WRITE, FILE_BINARY );
+	TaggedFile file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
 		file.tag( TAG_TITLE ).writeString( m_title );
         file.tag( TAG_COLUMNS ).writeArray( m_columns );
@@ -513,7 +513,7 @@ bool isNumeric( const String &str ) {
 
 /// load from comma-separated file
 void Table::loadCSV( const String &fileName ) {
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 	
 		// get labels
@@ -565,7 +565,7 @@ void Table::loadCSV( const String &fileName ) {
 /// save to comma-separated file
 void Table::saveCSV( const String &fileName, bool append ) const {
 	bool skipHeader = append && fileExists( fileName );
-	File file( fileName, append ? FILE_APPEND : FILE_WRITE, FILE_TEXT );
+	File file( fileName, append ? FileOpenMode::FILE_APPEND : FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		
 		// write headers

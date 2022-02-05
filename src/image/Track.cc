@@ -43,7 +43,7 @@ void Track::save( File &file ) const {
 
 /// load tracks from binary file
 void TrackSet::load( const String &fileName ) {
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
 		m_tracks.reset();
 		file.readArray( m_tracks );
@@ -53,7 +53,7 @@ void TrackSet::load( const String &fileName ) {
 
 /// save tracks to binary file
 void TrackSet::save( const String &fileName ) const {
-	File file( fileName, FILE_WRITE, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
 		file.writeArray( m_tracks );
 	}

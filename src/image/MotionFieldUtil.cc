@@ -180,7 +180,7 @@ aptr<MotionField> loadMotionField( File &file ) {
 /// load motion field from binary data file
 aptr<MotionField> loadMotionField( const String &fileName ) {
 	aptr<MotionField> mf;
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) 
 		mf = loadMotionField( file );
 	return mf;
@@ -249,7 +249,7 @@ void saveMotionField( const MotionField &mf, File &file ) {
 
 /// save motion field to binary data file
 void saveMotionField( const MotionField &mf, const String &fileName ) {
-	File file( fileName, FILE_WRITE, FILE_BINARY ); 
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY ); 
 	if (file.openSuccess()) 
 		saveMotionField( mf, file );
 }
@@ -273,7 +273,7 @@ void saveMotionFieldImage( const MotionField &mf, const String &fileName ) {
 
 /// save motion field to text file
 void saveMotionFieldText( const MotionField &mf, const String &fileName ) {
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 
 		// write dimensions

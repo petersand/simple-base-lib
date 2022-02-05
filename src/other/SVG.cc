@@ -8,7 +8,7 @@ namespace sbl {
 
 /// create SVG file (we open file before writing shapes into the file)
 SVG::SVG( int width, int height, const String &fileName ) {
-	m_file = new File( fileName, FILE_WRITE, FILE_TEXT );
+	m_file = new File( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	m_scale = 1;
 	if (m_file->openSuccess()) {
 		m_file->writeF( "<?xml version=\"1.0\"?>\n" );

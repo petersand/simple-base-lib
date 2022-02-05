@@ -146,11 +146,11 @@ void Config::writeString( const String &name, const String &val, ConfigEntryType
 		if (m_allowNewEntries) {
 			configEntry = new ConfigEntry;
 			configEntry->name = name;
-			if (type == CONFIG_ENTRY_TEXT) {
+			if (type == ConfigEntryType::CONFIG_ENTRY_TEXT) {
 				if (name.endsWith( "fileName" ) || name.endsWith( "FileName" )) {
-					type = CONFIG_ENTRY_FILE;
+					type = ConfigEntryType::CONFIG_ENTRY_FILE;
 				} else if (name.endsWith( "path" ) || name.endsWith( "Path" )) {
-					type = CONFIG_ENTRY_PATH;
+					type = ConfigEntryType::CONFIG_ENTRY_PATH;
 				}
 			}
 			configEntry->type = type;
@@ -167,7 +167,7 @@ void Config::writeString( const String &name, const String &val, ConfigEntryType
 /// load config from text file
 // fix(later): more error checking
 bool Config::load( const String &fileName ) {
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file(fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT);
 	while (file.endOfFile() == false) {
 		String line = file.readLine().strip();
 
@@ -175,7 +175,7 @@ bool Config::load( const String &fileName ) {
 		if (line.length() == 0) {
 			if (file.endOfFile() == false) {
 				ConfigEntry *configEntry = new ConfigEntry;
-				configEntry->type = CONFIG_ENTRY_BLANK;
+				configEntry->type = ConfigEntryType::CONFIG_ENTRY_BLANK;
 				m_configEntries.append( configEntry );
 			}
 
@@ -196,7 +196,7 @@ bool Config::load( const String &fileName ) {
             // if section line (no name or value, just comment)
             if (body.length() == 0 && comment.length() > 0) {
 				configEntry->name = comment;
-                configEntry->type = CONFIG_ENTRY_SECTION;
+                configEntry->type = ConfigEntryType::CONFIG_ENTRY_SECTION;
 
             // if normal name/value line
             } else {
@@ -209,11 +209,11 @@ bool Config::load( const String &fileName ) {
 					if (leftBracketPos >= 0 && rightBracketPos >= 0) {
 						String meta = body.leftOf( rightBracketPos ).rightOf( leftBracketPos );
 						if (meta == "bool")
-							configEntry->type = CONFIG_ENTRY_BOOL;
+							configEntry->type = ConfigEntryType::CONFIG_ENTRY_BOOL;
 						else if (meta == "path")
-							configEntry->type = CONFIG_ENTRY_PATH;
+							configEntry->type = ConfigEntryType::CONFIG_ENTRY_PATH;
 						else if (meta == "file")
-							configEntry->type = CONFIG_ENTRY_FILE;
+							configEntry->type = ConfigEntryType::CONFIG_ENTRY_FILE;
 						body = body.leftOf( leftBracketPos );
 					}
 
@@ -225,7 +225,7 @@ bool Config::load( const String &fileName ) {
             }
 
             // if entry is good, store it
-			if (configEntry->name.length() && (configEntry->value.length() || configEntry->type == CONFIG_ENTRY_SECTION)) {
+			if (configEntry->name.length() && (configEntry->value.length() || configEntry->type == ConfigEntryType::CONFIG_ENTRY_SECTION)) {
 				m_configEntries.append( configEntry );
 			} else {
 				delete configEntry;
@@ -240,17 +240,17 @@ bool Config::load( const String &fileName ) {
 
 /// save config to text file
 void Config::save( const String &fileName ) const {
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		for (int i = 0; i < m_configEntries.count(); i++) {
 			const ConfigEntry &configEntry = m_configEntries[ i ];
 			if (configEntry.name.length() && configEntry.value.length()) {
 				String line = configEntry.name + " " + configEntry.value;
-				if (configEntry.type == CONFIG_ENTRY_BOOL)
+				if (configEntry.type == ConfigEntryType::CONFIG_ENTRY_BOOL)
 					line += " [bool]";
-				else if (configEntry.type == CONFIG_ENTRY_PATH)
+				else if (configEntry.type == ConfigEntryType::CONFIG_ENTRY_PATH)
 					line += " [path]";
-				else if (configEntry.type == CONFIG_ENTRY_FILE)
+				else if (configEntry.type == ConfigEntryType::CONFIG_ENTRY_FILE)
 					line += " [file]";
 				if (configEntry.description.length()) {
 					line += " # ";
@@ -258,12 +258,12 @@ void Config::save( const String &fileName ) const {
 				}
 				line += "\n";
 				file.writeRawString( line );
-			} else if (configEntry.type == CONFIG_ENTRY_SECTION) {
+			} else if (configEntry.type == ConfigEntryType::CONFIG_ENTRY_SECTION) {
 				String line = "# ";
 				line += configEntry.name;
 				line += "\n";
 				file.writeRawString( line );
-			} else if (configEntry.type == CONFIG_ENTRY_BLANK) {
+			} else if (configEntry.type == ConfigEntryType::CONFIG_ENTRY_BLANK) {
 				file.writeRawString( "\n" );		
 			} else {
 				warning( "invalid config entry" );

@@ -37,7 +37,7 @@ class File {
 public:
 
 	/// open a file
-	explicit File( const String &fileName = "", FileOpenMode mode = FileOpenMode::FILE_READ, FileOpenType type = FileOpenType::FILE_TEXT );
+	explicit File(const String &fileName = "", FileOpenMode mode = FileOpenMode::FILE_READ, FileOpenType type = FileOpenType::FILE_TEXT);
 
 	/// close the file
 	virtual ~File();

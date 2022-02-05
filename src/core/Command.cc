@@ -216,7 +216,7 @@ void loadCommandHistory() {
 // save list of recent commands to file
 void saveCommandHistory() {
 	String fileName = commandHistoryPath() + "/history.txt";
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file(fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT);
 	if (file.openSuccess()) {
 		for (int i = 0; i < commandHistory().count(); i++) {
 			file.writeRawString( commandHistory()[ i ] );

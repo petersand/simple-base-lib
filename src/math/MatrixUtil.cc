@@ -62,7 +62,7 @@ void writeSparseMatrixF( File &file, const MatrixF &mat ) {
 
 /// write matrix (and dimensions) to file
 void writeMatrixF( const String &fileName, const MatrixF &mat ) {
-	File file( fileName, FILE_WRITE, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		writeMatrixF( file, mat );
 }
@@ -70,7 +70,7 @@ void writeMatrixF( const String &fileName, const MatrixF &mat ) {
 
 /// write matrix (and dimensions) to file
 void writeSymMatrixF( const String &fileName, const MatrixF &mat ) {
-	File file( fileName, FILE_WRITE, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		writeSymMatrixF( file, mat );
 }
@@ -78,7 +78,7 @@ void writeSymMatrixF( const String &fileName, const MatrixF &mat ) {
 
 /// write matrix (and dimensions) to file
 void writeSparseMatrixF( const String &fileName, const MatrixF &mat ) {
-	File file( fileName, FILE_WRITE, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		writeSparseMatrixF( file, mat );
 }
@@ -148,7 +148,7 @@ aptr<MatrixF> readSparseMatrixF( File &file ) {
 /// read matrix (and dimensions) from file
 aptr<MatrixF> readMatrixF( const String &fileName ) {
 	aptr<MatrixF> mat;
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		mat = readMatrixF( file );
 	return mat ;
@@ -158,7 +158,7 @@ aptr<MatrixF> readMatrixF( const String &fileName ) {
 /// read matrix (and dimensions) from file
 aptr<MatrixF> readSymMatrixF( const String &fileName ) {
 	aptr<MatrixF> mat;
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		mat = readSymMatrixF( file );
 	return mat;
@@ -168,7 +168,7 @@ aptr<MatrixF> readSymMatrixF( const String &fileName ) {
 /// read matrix (and dimensions) from file
 aptr<MatrixF> readSparseMatrixF( const String &fileName ) {
 	aptr<MatrixF> mat;
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess())
 		mat = readSparseMatrixF( file );
 	return mat;
@@ -177,7 +177,7 @@ aptr<MatrixF> readSparseMatrixF( const String &fileName ) {
 
 /// save matrix to CSV file
 void exportMatrixF( const String &fileName, const MatrixF &mat ) {
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		int rows = mat.rows(), cols = mat.cols();
 		for (int i = 0; i < rows; i++) {

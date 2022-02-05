@@ -56,7 +56,7 @@ void TimeSeries::save( File &file ) const {
 
 /// load from CSV file
 void TimeSeries::loadCSV( const String &fileName ) {
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		while (file.endOfFile() == false) {
 			Array<String> split = file.readLine().split( "," );
@@ -72,7 +72,7 @@ void TimeSeries::loadCSV( const String &fileName ) {
 
 /// save to CSV file
 void TimeSeries::saveCSV( const String &fileName ) const {
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess()) {
 		for (int i = 0; i < m_values.size(); i++) {
 			file.writeF( "%f, %f\n", m_timestamps[ i ], m_values[ i ] );
@@ -88,7 +88,7 @@ void TimeSeries::saveCSV( const String &fileName ) const {
 
 /// load a set of TimeSeries objects from a raw data file
 void loadTimeSeriesSet( const String &fileName, Array<TimeSeries> &timeSeriesSet ) {
-	File file( fileName, FILE_READ, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_TEXT );
 	if (file.openSuccess())
 		file.readArray( timeSeriesSet );
 }
@@ -96,7 +96,7 @@ void loadTimeSeriesSet( const String &fileName, Array<TimeSeries> &timeSeriesSet
 
 /// save a set of TimeSeries objects to a raw data file
 void saveTimeSeriesSet( const String &fileName, const Array<TimeSeries> &timeSeriesSet ) {
-	File file( fileName, FILE_WRITE, FILE_TEXT );
+	File file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_TEXT );
 	if (file.openSuccess())
 		file.writeArray( timeSeriesSet );
 }

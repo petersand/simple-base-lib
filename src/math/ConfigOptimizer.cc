@@ -12,7 +12,7 @@ double evalConfig( ConfigOptimizerObjective &objective, Config &conf,
 	double score = objective.eval( conf, paramUpdate );
 
 	// add to log file
-	File logFile( outputPath + "/confOpt.txt", FILE_APPEND, FILE_TEXT );
+	File logFile( outputPath + "/confOpt.txt", FileOpenMode::FILE_APPEND, FileOpenType::FILE_TEXT );
 	if (logFile.openSuccess()) {
 		logFile.writeF( "%s, %f\n", paramUpdate.c_str(), score );
 	}
@@ -67,7 +67,7 @@ void runConfigOptimizer( ConfigOptimizerObjective &objective, Config &conf,
 	}
 
 	// pick best
-	File logFile( outputPath + "/confOpt.txt", FILE_APPEND, FILE_TEXT );
+	File logFile( outputPath + "/confOpt.txt", FileOpenMode::FILE_APPEND, FileOpenType::FILE_TEXT );
 	if (logFile.openSuccess()) {
 		logFile.writeF( "\nbest: %s, %f\n\n", bestParamUpdate.c_str(), bestScore );
 	}

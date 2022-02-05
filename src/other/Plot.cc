@@ -296,7 +296,7 @@ void Plot::save( const String &fileName, int width, int height ) {
 
 /// load plot data
 void Plot::loadData( const String &fileName ) {
-	TaggedFile file( fileName, FILE_READ, FILE_BINARY );
+	TaggedFile file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
         int tag = 0;
         do {
@@ -326,7 +326,7 @@ void Plot::loadData( const String &fileName ) {
 
 /// save plot data, allowing the plot object to be reconstructed
 void Plot::saveData( const String &fileName ) {
-	TaggedFile file( fileName, FILE_WRITE, FILE_BINARY );
+	TaggedFile file( fileName, FileOpenMode::FILE_WRITE, FileOpenType::FILE_BINARY );
 	if (file.openSuccess()) {
         file.tag( TAG_TITLE ).writeString( m_title );
         file.tag( TAG_X_LABEL ).writeString( m_xLabel );

@@ -77,7 +77,7 @@ String pathPart( const String &fileName ) {
 /// true if file can be open for reading
 // fix(faster): don't open file
 bool fileExists( const String &fileName ) {
-	File file( fileName, FILE_READ, FILE_BINARY );
+	File file( fileName, FileOpenMode::FILE_READ, FileOpenType::FILE_BINARY );
 	return file.openSuccess();
 }
 
@@ -118,7 +118,7 @@ void moveFile( const String &srcFileName, const String &destFileName ) {
 
 /// append a line to a text file (e.g. for logging)
 void appendText( const String &fileName, const String &str ) {
-	File file( fileName, FILE_APPEND, FILE_TEXT ); 
+	File file( fileName, FileOpenMode::FILE_APPEND, FileOpenType::FILE_TEXT ); 
 	if (file.openSuccess())
 		file.writeF( str.c_str() );
 }
