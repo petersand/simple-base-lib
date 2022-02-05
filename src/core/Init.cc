@@ -6,7 +6,6 @@
 #include <sbl/math/VectorUtil.h>
 #include <sbl/math/OptimizerUtil.h>
 #include <sbl/system/Signal.h>
-#include <sbl/system/Microcontroller.h>
 #include <sbl/image/ImageUtil.h>
 #include <sbl/other/CodeCheck.h>
 #ifdef USE_PYTHON
@@ -30,7 +29,6 @@ void initModules() {
 
 	// system modules
 	initSignal();
-	initMicrocontroller();
 
 	// image modules
 	initImageUtil();

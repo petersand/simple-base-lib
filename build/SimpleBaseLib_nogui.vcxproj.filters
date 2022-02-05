@@ -168,12 +168,6 @@
     <ClInclude Include="..\include\sbl\system\FileSystem.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\sbl\system\Microcontroller.h">
-      <Filter>Header Files\system</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\sbl\system\SerialPort.h">
-      <Filter>Header Files\system</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\sbl\system\Signal.h">
       <Filter>Header Files\system</Filter>
     </ClInclude>
@@ -206,6 +200,9 @@
     </ClInclude>
     <ClInclude Include="..\include\sbl\other\TaggedFile.h">
       <Filter>Header Files\other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\sbl\system\SerialPort.h">
+      <Filter>Header Files\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -308,12 +305,6 @@
     <ClCompile Include="..\src\system\FileSystem.cc">
       <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\system\Microcontroller.cc">
-      <Filter>Source Files\system</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\system\SerialPort.cc">
-      <Filter>Source Files\system</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\system\Signal.cc">
       <Filter>Source Files\system</Filter>
     </ClCompile>
@@ -349,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="..\external\CDT\CDT.cc">
       <Filter>Source Files\external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\system\SerialPort.cc">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

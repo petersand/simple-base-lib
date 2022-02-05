@@ -1,76 +1,69 @@
-#ifndef _SBL_SERIAL_PORT_H_
-#define _SBL_SERIAL_PORT_H_
-#include <sbl/core/String.h>
-#include <sbl/math/Vector.h>
+#ifndef _SERIAL_PORT_H_
+#define _SERIAL_PORT_H_
+#include <sbl/core/StringUtil.h>
 namespace sbl {
 
 
-/// The SerialPort class provides a simple platform-independent interface for serial devices.
-class SerialPort {
+class SerialHandler {
 public:
-
-	/// open serial port; for windows, serial port name is of form "COM2"
-	explicit SerialPort( const String &comPortName, int baudRate );
-
-	// basic destructor
-	~SerialPort();
-
-	// true if serial port opened successfully
-	inline bool openSuccess() const { return m_comOpened; }
-
-	//-------------------------------------------
-	// READ / WRITE BYTES
-	//-------------------------------------------
-
-	/// read a byte; non-blocking; returns -1 if no byte to read
-	int readByte();
-
-	/// send a byte to the serial port
-	void writeByte( unsigned char byte, bool debug = false );
-
-	//-------------------------------------------
-	// READ / WRITE STRINGS
-	//-------------------------------------------
-
-	/// read a string up to the specified stop symbol
-	String readString( int stopByte );
-
-	/// write a string (assumes 8-bit char values)
-	void writeString( const String &str );
-
-	//-------------------------------------------
-	// READ TO BUFFER
-	//-------------------------------------------
-
-	/// append read data onto internal buffer, until reaching the specified stop byte
-	void readToBuffer( int stopByte );
-
-	inline const unsigned char *buffer() const { return m_buffer; }
-
-	inline int bufferLen() const { return m_bufferPos; }
-
-	/// reset/clear the buffer
-	inline void resetBuffer() { m_bufferPos = 0; }
-
-private:
-
-	// the serial port connection
-	bool m_comOpened;
-	void *m_comFile;
-
-	// configuration
-	bool m_verbose;
-
-	// a buffer of received data
-	unsigned char *m_buffer;
-	int m_bufferPos;
-	int m_bufferLen;
-
-	// disable copy constructor and assignment operator
-	SerialPort( const SerialPort &x );
-	SerialPort &operator=( const SerialPort &x );
+	virtual bool processSerialMessage(const String &message) = 0;
 };
 
 
+// The SerialPort class provides a high-level interface to a serial port
+class SerialPort {
+public:
+
+	// open/close serial port
+	SerialPort(const String &portName, int baud, int bufferLength=200);
+	~SerialPort();
+
+	// set the verbosity level
+	inline void verbose(bool v) { m_verbose = v; }
+
+	// reads until receives untilChar; if hasn't yet received untilChar, returns empty string; 
+	// should call at least as often as will receive untilChar (this will only return one string (up to untilChar per call);
+	// untilChar itself won't be included
+	String readString(char untilChar);
+
+	// send string
+	void writeString(const String &s);
+
+	// send a command immediately; add a checksum
+	void writeCommand(const String &command);
+
+	// ======== high-level message handling with queuing and acks functions ========
+
+	// set an object to be notified on incoming serial messages
+	void setHandler(SerialHandler *handler) { m_handler = handler; }
+
+	// sends a command or adds to outgoing queue
+	void sendCommand(const String &command, bool waitForAck);
+
+	// process any incoming serial messages (may handle multiple messages in a single call)
+	void checkForMessages();
+
+	// returns the number of checksum errors encountered since startup
+	inline int checksumErrorCount() const { return m_checksumErrorCount; }
+
+private:
+
+	int m_port;  // file descriptor
+	int m_pos;  // position with the buffer
+	char *m_buf;  // a buffer of incoming data
+	int m_bufLen;
+    bool m_checkForData;
+	bool m_verbose;
+	int m_checksumErrorCount;
+	double m_lastCommandTime;
+	SerialHandler *m_handler;
+	Array<String> m_outgoingMessages;  // first element is always the most recently sent command
+};
+
+
+// an implementation of the CRC16-CCITT algorithm
+unsigned short crc16(const char *message);
+
+
 } // end namespace sbl
-#endif // _SBL_SERIAL_PORT_H_
+#endif // _SERIAL_PORT_H_

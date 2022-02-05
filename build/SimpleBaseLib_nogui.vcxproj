@@ -174,7 +174,6 @@
     <ClInclude Include="..\include\sbl\other\SVG.h" />
     <ClInclude Include="..\include\sbl\other\TaggedFile.h" />
     <ClInclude Include="..\include\sbl\system\FileSystem.h" />
-    <ClInclude Include="..\include\sbl\system\Microcontroller.h" />
     <ClInclude Include="..\include\sbl\system\SerialPort.h" />
     <ClInclude Include="..\include\sbl\system\Signal.h" />
     <ClInclude Include="..\include\sbl\system\Socket.h" />
@@ -223,7 +222,6 @@
     <ClCompile Include="..\src\other\SVG.cc" />
     <ClCompile Include="..\src\other\TaggedFile.cc" />
     <ClCompile Include="..\src\system\FileSystem.cc" />
-    <ClCompile Include="..\src\system\Microcontroller.cc" />
     <ClCompile Include="..\src\system\SerialPort.cc" />
     <ClCompile Include="..\src\system\Signal.cc" />
     <ClCompile Include="..\src\system\Socket.cc" />

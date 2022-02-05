@@ -1,150 +1,262 @@
 #include <sbl/system/SerialPort.h>
-#include <sbl/core/Display.h>
-#include <sbl/system/Timer.h>
 #include <stdio.h>
-#ifdef WIN32
-	#include <Windows.h>
-#endif 
+#include <string.h>
+#ifndef WIN32
+	#include <fcntl.h>
+	#include <errno.h>
+	#include <termios.h>
+	#include <unistd.h>
+    #include <sys/file.h>
+#endif
+#include <sbl/core/Command.h>
+#include <sbl/core/StringUtil.h>
+#include <sbl/system/Timer.h>
 namespace sbl {
 
 
-//-------------------------------------------
-// SERIAL PORT CLASS
-//-------------------------------------------
+// some code based on this code: https://blog.mbedded.ninja/programming/operating-systems/linux/linux-serial-ports-using-c-cpp/
 
 
-/// open serial port; for windows, serial port name is of form "COM2"
-SerialPort::SerialPort( const String &comPortName, int baudRate ) {
-	m_comOpened = false;
-	m_verbose = false;
+// constructor opens serial port
+SerialPort::SerialPort(const String &portName, int baud, int bufferLength) {
+	m_buf = NULL;
+    m_checkForData = false;
+	m_verbose = true;
+	m_checksumErrorCount = 0;
+	m_lastCommandTime = 0;
 
-	// allocate a buffer for incoming data
-	m_bufferLen = 1000;
-	m_buffer = new unsigned char[ m_bufferLen ];
-	m_bufferPos = 0;
+#ifndef WIN32
+    int baudDef = -1;
+    switch (baud) {
+    case 9600: baudDef = B9600; break;
+    case 38400: baudDef = B38400; break;
+    default:
+        disp(1, "baud not supported: %d", baud);
+        m_port = -1;
+        return;
+    }
 
-// windows-specific serial port opening code
-#ifdef WIN32
-
-	// open comm port file handle
-	m_comFile = CreateFileA( comPortName.c_str(), 
-		GENERIC_READ | GENERIC_WRITE,
-		0, // exclusive access
-		NULL, // no security
-		OPEN_EXISTING,
-		0, // no overlapped I/O
-		NULL); // null template 
-	if (m_comFile == INVALID_HANDLE_VALUE) {
-		warning( "error: failed to open comm file" );
+	// open the serial port file
+	m_port = open(portName.c_str(), O_RDWR);
+	if (m_port < 0) {
+		disp(1, "error %i from open: %s", errno, strerror(errno));
 		return;
 	}
 
-	// create and clear comm buffers
-	if (SetupComm( m_comFile, 128, 128) == false) 
-		warning( "error: failed to set up comm buffers" );
-	if (PurgeComm( m_comFile, PURGE_TXABORT | PURGE_TXCLEAR ) == false)
-		warning( "error: failed to purge comm buffers" );
-
-	// set timeout values (msecs)
-	// timeout of 0 -> non-blocking
-	COMMTIMEOUTS timeouts;
-	timeouts.ReadIntervalTimeout = MAXDWORD;
-	timeouts.ReadTotalTimeoutConstant = 0;
-	timeouts.ReadTotalTimeoutMultiplier = 0;
-	timeouts.WriteTotalTimeoutConstant = 0;
-	timeouts.WriteTotalTimeoutMultiplier = 0;
-	if (SetCommTimeouts( m_comFile, &timeouts ) == false) 
-		warning( "error: error setting comm timeouts" );
-
-	// configure comm port
-	DCB dcb;
-	if (GetCommState( m_comFile, &dcb )) {
-		dcb.BaudRate = baudRate;
-		dcb.ByteSize = 8;
-		dcb.Parity = NOPARITY;
-		dcb.StopBits = ONESTOPBIT;
-		if (SetCommState( m_comFile, &dcb) == false)
-			warning( "error: error setting comm settings" );
-	} else {
-		warning( "error: error getting comm settings" );
+	// lock the serial port file
+	if(flock(m_port, LOCK_EX | LOCK_NB) == -1) {
+		disp(1, "serial port %s already in use", portName.c_str());
+		m_port = -1;
+		return;
 	}
-	m_comOpened = true;
-#endif // WIN32
+
+	// prepare buffer
+	m_buf = new char[bufferLength];
+	m_bufLen = bufferLength;
+	m_pos = 0;
+
+	// update settings
+	struct termios tty;
+	memset(&tty, 0, sizeof tty);
+	if(tcgetattr(m_port, &tty) != 0) {
+		disp(1, "error %i from tcgetattr: %s", errno, strerror(errno));
+	}
+	tty.c_cflag &= ~PARENB;  // no parity bit
+	tty.c_cflag &= ~CSTOPB;  // one stop bit
+	tty.c_cflag |= CS8;  // 8 bits per byte
+	tty.c_cflag &= ~CRTSCTS;  // disable hardware flow control
+	tty.c_cflag |= CREAD | CLOCAL; // turn on READ & ignore ctrl lines (CLOCAL = 1)
+	tty.c_lflag &= ~ICANON;  // disable canonical mode
+	tty.c_lflag &= ~ECHO;  // disable echo
+	tty.c_lflag &= ~ECHOE;  // disable erasure
+	tty.c_lflag &= ~ECHONL;  // disable new-line echo
+	tty.c_lflag &= ~ISIG;  // disable interpretation of INTR, QUIT and SUSP
+	tty.c_iflag &= ~(IXON | IXOFF | IXANY);  // disable software flow control
+	tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL);  // disable any special handling of received bytes
+	tty.c_oflag &= ~OPOST;  // prevent special interpretation of output bytes (e.g. newline chars)
+	tty.c_oflag &= ~ONLCR;  // prevent conversion of newline to carriage return/line feed
+	tty.c_cc[VTIME] = 0;  // no blocking (see https://blog.mbedded.ninja/programming/operating-systems/linux/linux-serial-ports-using-c-cpp/)
+	tty.c_cc[VMIN] = 0;
+	cfsetispeed(&tty, baudDef);
+	cfsetospeed(&tty, baudDef);
+	if (tcsetattr(m_port, TCSANOW, &tty) != 0) {
+		disp(1, "error %i from tcsetattr: %s\n", errno, strerror(errno));
+	}
+    disp(1, "opened port: %s, baud: %d, fd: %d", portName.c_str(), baud, m_port);
+#endif
 }
 
 
-// basic destructor
+// destructor closes serial port
 SerialPort::~SerialPort() {
-	delete [] m_buffer;
-	if (m_comOpened) {
-#ifdef WIN32
-		if (PurgeComm( m_comFile, PURGE_TXCLEAR | PURGE_RXCLEAR ) && m_verbose)
-			warning( "error: failed to purge comm buffers" );
-		CloseHandle( m_comFile );
-#endif // WIN32
+	if (m_port >= 0) {
+#ifndef WIN32
+		close(m_port);
+#endif
+	}
+	if (m_buf) {
+		delete [] m_buf;
 	}
 }
 
 
-/// read a byte; non-blocking; returns -1 if no byte to read 
-int SerialPort::readByte() {
-	unsigned char byte = 0;
-	unsigned long readCount = -1;
+// reads until receives untilChar; if hasn't yet received untilChar, returns empty string; 
+// should call at least as often as will receive untilChar (this will only return one string (up to untilChar per call);
+// untilChar itself won't be included
+String SerialPort::readString(char untilChar) {
+	String result;
+	if (m_port >= 0) {
+		// at start: m_pos is index of first unused byte in buffer
 #ifdef WIN32
-	ReadFile( m_comFile, &byte, 1, &readCount, NULL );
-#endif // WIN32
-	int val = byte;
-	if (readCount == 0)
-		val = -1;
-	return val;
+		int bytesRead = 0;
+#else
+		int bytesRead = read(m_port, m_buf + m_pos, m_bufLen - m_pos);
+#endif
+		if (bytesRead) {
+            m_buf[m_pos + bytesRead] = 0;
+			m_pos += bytesRead;
+            m_checkForData = true;
+        }
+        if (m_checkForData) {
+            bool found = false;
+			for (int i = 0; i < m_pos; i++) {
+				if (m_buf[i] == untilChar) {
+
+					// copy up to (but not including) untilChar to result string
+					m_buf[i] = 0;
+					result = m_buf;
+
+					// move the buffer forward
+					int newStart = i + 1;  // char after untilChar will become new start of buffer
+					for (int j = newStart; j < m_pos; j++) {
+						m_buf[j - newStart] = m_buf[j];
+					}
+					m_pos -= newStart;
+                    found = true;
+					break;
+				}
+			}
+            m_checkForData = found;  // don't need to check again until receive more data
+		}
+	}
+	return result;
 }
 
 
-/// send a byte to the serial port
-void SerialPort::writeByte( unsigned char byte, bool debug ) {
-#ifdef WIN32
-	//unsigned long error = 0;
-	//ClearCommError( m_comFile, &error, NULL); // fix(clean): remove this?
-	unsigned long writeCount = -1;
-	WriteFile( m_comFile, &byte, 1, &writeCount, NULL );
-#endif // WIN32
-	if (debug) {
-		if (byte >= 'A' && byte <= 'Z')
-			disp( 1, "[%c]", byte );
-		else
-			disp( 1, "(%d)", byte );
+// send string
+void SerialPort::writeString(const String &s) {
+	if (m_port >= 0) {
+#ifndef WIN32
+        int len = s.length();
+        int wrote_bytes = write(m_port, s.c_str(), len);
+        if (wrote_bytes != len) {
+            warning("only wrote %d of %d bytes", wrote_bytes, len);
+        }
+#endif
 	}
 }
 
 
-/// read a string up to the specified stop symbol
-String SerialPort::readString( int stopByte ) {
-	m_bufferPos = 0;
-	readToBuffer( stopByte );
-	m_buffer[ m_bufferPos ] = 0;
-	return String( (char *) m_buffer );
+// send a command immediately; add a checksum
+void SerialPort::writeCommand(const String &command) {
+	unsigned short crc = crc16(command.c_str());
+	String fullCommand = sprintF("%s|%d\r\n", command.c_str(), crc);
+	writeString(fullCommand);
+	m_lastCommandTime = getPerfTime();
 }
 
 
-/// write a string (assumes 8-bit char values)
-void SerialPort::writeString( const String &str ) {
-	for (int i = 0; i < str.length(); i++) 
-		writeByte( str.c_str()[ i ] );
-}
+// ======== high-level message handling with queuing and acks functions ========
 
 
-/// append read data onto internal buffer, until reaching the specified stop byte
-void SerialPort::readToBuffer( int stopByte ) {
-	int byte = readByte();
-	while (byte >= 0) {
-		m_buffer[ m_bufferPos++ ] = byte;
-		if (m_bufferPos >= m_bufferLen) // fix(later): be smarter about this
-			m_bufferPos = 0;
-		if (byte == stopByte)
-			break;
-		byte = readByte(); // returns -1 if no byte to read; breaks loop
+// sends a command or adds to outgoing queue
+void SerialPort::sendCommand(const String &command, bool waitForAck) {
+	if (m_outgoingMessages.count() == 0) {
+		writeCommand(command);
 	}
-	assertAlways( m_bufferPos < m_bufferLen );
+	m_outgoingMessages.appendCopy(command);  // append even if sending immediately, since the first item in the list should always be the most recently sent (until ack'd)
+	if (waitForAck) {
+		while (m_outgoingMessages.count()) {  // once list is empty, our command has been ack'd
+			checkForMessages();
+			if (checkCommandEvents()) {
+				disp(1, "serial timeout waiting for ack (of %s); cancelling", command.c_str());
+				break;
+			}
+		}
+	}
+}
+
+
+// process any incoming serial messages (may handle multiple messages in a single call)
+void SerialPort::checkForMessages() {
+	while (true) {
+		String message = readString(10);
+		if (message.length() == 0) {
+			break;  // if no incoming message, nothing else to do in this loop
+		}
+
+		// check checksum
+        int checksum = message.rightOfLast('|').toInt();
+        message = message.leftOfLast('|');
+        if (checksum != crc16(message.c_str())) {
+			disp(1, "checksum error on message: %s", message.c_str());
+			m_checksumErrorCount++;
+
+		// checksum is ok
+		} else {
+
+			// check for ack
+			String deviceId = message.leftOfFirst(':');
+			String messageBody = message.rightOfFirst(':').strip();  // TODO: if we get boards to ack without space, can remove this
+			if (messageBody.startsWith("ack ")) {
+				if (m_outgoingMessages.count()) {
+					String origMessage = deviceId + ":" + messageBody.rightOfFirst(' ');  // TODO: we're assuming no space after colon in original message; maybe should store deviceId and messageBody separately
+					if (origMessage == m_outgoingMessages[0]) {  // the most recent message is always at the front of the queue
+						m_outgoingMessages.remove(0);
+						if (m_outgoingMessages.count()) {  // if there's another message in the queue, send it now
+							writeCommand(m_outgoingMessages[0]);
+						}
+					}
+				}
+
+			// pass non-ack messages to handler (if specified)
+			} else if (m_handler) {
+				m_handler->processSerialMessage(message);
+			}
+		}
+	}
+
+	// resend last message if we've been waiting a while and it hasn't been ack'd
+	if (m_outgoingMessages.count()) {
+		if (getPerfTime() - m_lastCommandTime > 1.0) {
+			disp(1, "resending: %s", m_outgoingMessages[0].c_str());
+			writeCommand(m_outgoingMessages[0]);
+		}
+	}
+}
+
+
+// ======== checksum utilities ========
+
+
+// an implementation of the CRC16-CCITT algorithm; assumes data is an 8-bit value
+unsigned short crc16Update(unsigned short crc, unsigned char data) {
+    data = data ^ (crc & 0xFF);
+    data = data ^ ((data << 4) & 0xFF);
+    return (((data << 8) & 0xFFFF) | ((crc >> 8) & 0xFF)) ^ (data >> 4) ^ (data << 3);
+}
+
+
+// an implementation of the CRC16-CCITT algorithm
+unsigned short crc16(const char *message) {
+    unsigned short crc = 0xFFFF;
+	int i = 0;
+    while (message[i]) {
+		char c = message[i];
+        crc = crc16Update(crc, c);
+		i++;
+	}
+    return crc;
 }
 
 
