@@ -40,12 +40,14 @@ void chooseInitialMeans( const MatrixF &points, MatrixF &means ) {
 
 			// find nearest mean
 			float minDist = 1e20f;
-			int minDistIndex = 0;
+			// TODO: should minDistIndex be used?
+			// commented out due to -Werror
+			// int minDistIndex = 0;
 			for (int k = 0; k < j; k++) {
 				float dist = distSqd( points.dataRow( i ), means.dataRow( k ), dimCount );
 				if (dist < minDist) {
 					minDist = dist;
-					minDistIndex = k;
+					// minDistIndex = k;
 				}
 			}
 			if (minDist > maxDist) {

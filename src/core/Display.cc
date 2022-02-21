@@ -105,8 +105,9 @@ void warning( const char *str, ... ) {
 	va_start( argList, str );
 	vsprintf( displayBuf, str, argList ); 
 
-	// add warning text
-	char fullDisplayBuf[ 10000 ];
+	// add warning text -- means that fullDisplayBuf
+	// needs to be a bit longer than displayBuf
+	char fullDisplayBuf[ 10032 ];
 	sprintf( fullDisplayBuf, "warning: %s", displayBuf );
 	dispErrorStr( fullDisplayBuf );
 }
@@ -121,8 +122,9 @@ void fatalError( const char *str, ... ) {
 	va_start( argList, str );
 	vsprintf( displayBuf, str, argList ); 
 
-	// add warning text
-	char fullDisplayBuf[ 10000 ];
+	// add warning text -- means that fullDisplayBuf
+	// needs to be a bit longer than displayBuf
+	char fullDisplayBuf[ 10032 ];
 	sprintf( fullDisplayBuf, "fatal error: %s", displayBuf );
 	dispErrorStr( fullDisplayBuf );
 
