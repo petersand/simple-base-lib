@@ -26,19 +26,19 @@ public:
 
 	// operators
 
-	inline Point2 operator+=(Point2 const& p) {
+	Point2 operator+=(Point2 const& p) {
 		x += p.x;
 		y += p.y;
 		return *this;
 	}
 
-	inline Point2 operator-=(Point2 const& p) {
+	Point2 operator-=(Point2 const& p) {
 		x -= p.x;
 		y -= p.y;
 		return *this;
 	}
 
-	template <typename T> inline Point2 operator*=(T const& scalar) {
+	template <typename T> Point2 operator*=(T const& scalar) {
 		x *= scalar;
 		y *= scalar;
 		return *this;
