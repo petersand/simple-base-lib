@@ -26,8 +26,11 @@ public:
 
 	// operators
 	inline Point2 operator+( const Point2 &p ) const { return Point2( x + p.x, y + p.y ); }
+	inline Point2 operator*( double scalar ) const { return Point2( scalar*x, scalar*y ); }
 };
 
+// needed so that left-hand multiplication by a constant works...
+inline Point2 operator*( double scalar, Point2 p ) { return p*scalar; }
 
 //-------------------------------------------
 // POINT 3 CLASS 
@@ -51,8 +54,14 @@ public:
 
 	// operators
 	inline Point3 operator+( const Point3 &p ) const { return Point3( x + p.x, y + p.y, z + p.z ); }
+	inline Point3 operator*( double scalar ) const { return Point3( scalar*x, scalar*y, scalar*z ); }
+
+	// conversion function
+	inline Point2 toXY() const { return Point2( x, y ); }
 };
 
+// needed so that left-hand multiplication by a constant works...
+inline Point3 operator*( double scalar, Point3 p ) { return p*scalar; }
 
 //-------------------------------------------
 // SEGMENT 2 CLASS 

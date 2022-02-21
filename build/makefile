@@ -2,9 +2,12 @@ CPP=g++
 OPTLEVEL=2
 WARNFLAGS=-Wall -Wstrict-aliasing -Werror
 INCLUDE=-I../include -I$(OPENCV)/include
-OPTFLAGS=-march=i686 -msse2 -mfpmath=sse 
+OPTFLAGS=-msse2 -mfpmath=sse
 CONFIGFLAGS=-DUSE_OPENCV -DUSE_CDT #-DUSE_ZLIB #-D_DEBUG 
-CPPFLAGS=-fpack-struct=8
+
+# -std=c++11 is to make sure building on macOS works
+CPPFLAGS=-fpack-struct=8 -std=c++11
+
 CPPFLAGS+=$(WARNFLAGS) $(INCLUDE) -O$(OPTLEVEL) $(OPTFLAGS) $(CONFIGFLAGS) # -g -pg 
 SOURCES=$(wildcard ../src/core/*.cc) $(wildcard ../src/math/*.cc) $(wildcard ../src/image/*.cc) $(wildcard ../src/system/*.cc) $(wildcard ../src/other/*.cc) ../external/CDT/CDT.cc
 INCLUDES=$(wildcard ../include/sbl/core/*.h) $(wildcard ../include/sbl/math/*.h) $(wildcard ../include/sbl/image/*.h) $(wildcard ../include/sbl/system/*.h) $(wildcard ../include/sbl/other/*.h) ../external/CDT/CDT.h

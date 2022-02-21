@@ -1,5 +1,5 @@
 #ifndef _SBL_TENSOR_UTIL_H_
-#define _TENSOR_UTIL_H_
+#define _SBL_TENSOR_UTIL_H_
 #include <sbl/math/Tensor.h>
 namespace sbl {
 

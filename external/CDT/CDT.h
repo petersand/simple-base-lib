@@ -327,7 +327,7 @@ class QuadEdge {
 #endif
 
   public:
-	QuadEdge(Boolean);
+	QuadEdge(Boolean constrained = FALSE);
 	Edge *edges()			{ return e; }
 	Boolean isConstrained()	{ return c; }
 	void Constrain() 		{ c = TRUE; }
@@ -374,7 +374,7 @@ class Mesh {
 	~Mesh();
 };
 
-inline QuadEdge::QuadEdge(Boolean constrained = FALSE)
+inline QuadEdge::QuadEdge(Boolean constrained)
 {
 	e[0].num = 0, e[1].num = 1, e[2].num = 2, e[3].num = 3;
 	e[0].next = &(e[0]); e[1].next = &(e[3]);
