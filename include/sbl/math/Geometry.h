@@ -25,12 +25,33 @@ public:
     double y;
 
 	// operators
-	inline Point2 operator+( const Point2 &p ) const { return Point2( x + p.x, y + p.y ); }
-	inline Point2 operator*( double scalar ) const { return Point2( scalar*x, scalar*y ); }
+
+	inline Point2 operator+=(Point2 const& p) {
+		x += p.x;
+		y += p.y;
+		return *this;
+	}
+
+	inline Point2 operator-=(Point2 const& p) {
+		x -= p.x;
+		y -= p.y;
+		return *this;
+	}
+
+	template <typename T> inline Point2 operator*=(T const& scalar) {
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
 };
 
-// needed so that left-hand multiplication by a constant works...
-inline Point2 operator*( double scalar, Point2 p ) { return p*scalar; }
+// rest of operators implemented as non-member functions
+// ref: https://stackoverflow.com/questions/14482380/multiplying-an-object-with-a-constant-from-left-side
+
+inline Point2 operator+(Point2 p1, Point2 const& p2) { return (p1 += p2); };
+inline Point2 operator-(Point2 p1, Point2 const& p2) { return (p1 -= p2); };
+template <typename T> inline Point2 operator*(T const& scalar, Point2 p) { return (p *= scalar); };
+template <typename T> inline Point2 operator*(Point2 p, T const& scalar) { return (p *= scalar); };
 
 //-------------------------------------------
 // POINT 3 CLASS 
@@ -53,15 +74,41 @@ public:
     double z;
 
 	// operators
-	inline Point3 operator+( const Point3 &p ) const { return Point3( x + p.x, y + p.y, z + p.z ); }
-	inline Point3 operator*( double scalar ) const { return Point3( scalar*x, scalar*y, scalar*z ); }
+
+	Point3 operator+=(Point3 const& p) {
+		x += p.x;
+		y += p.y;
+		z += p.z;
+		return *this;
+	}
+
+	Point3 operator-=(Point3 const& p) {
+		x -= p.x;
+		y -= p.y;
+		z -= p.z;
+		return *this;
+	}
+
+	template <typename T> Point3 operator*=(T const& scalar) {
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		return *this;
+	}
 
 	// conversion function
-	inline Point2 toXY() const { return Point2( x, y ); }
+	Point2 toXY() const {
+		return Point2(x, y);
+	}
 };
 
-// needed so that left-hand multiplication by a constant works...
-inline Point3 operator*( double scalar, Point3 p ) { return p*scalar; }
+// rest of operators implemented as non-member functions
+// ref: https://stackoverflow.com/questions/14482380/multiplying-an-object-with-a-constant-from-left-side
+
+inline Point3 operator+(Point3 p1, Point3 const& p2) { return (p1 += p2); };
+inline Point3 operator-(Point3 p1, Point3 const& p2) { return (p1 -= p2); };
+template <typename T> inline Point3 operator*(T const& scalar, Point3 p) { return (p *= scalar); };
+template <typename T> inline Point3 operator*(Point3 p, T const& scalar) { return (p *= scalar); };
 
 //-------------------------------------------
 // SEGMENT 2 CLASS 
