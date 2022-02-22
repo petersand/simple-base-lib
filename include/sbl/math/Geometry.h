@@ -110,6 +110,10 @@ inline Point3 operator-(Point3 p1, Point3 const& p2) { return (p1 -= p2); };
 template <typename T> inline Point3 operator*(T const& scalar, Point3 p) { return (p *= scalar); };
 template <typename T> inline Point3 operator*(Point3 p, T const& scalar) { return (p *= scalar); };
 
+// converting 2D to 3D
+
+inline Point3 xy2xyz(Point2 const& p, double z=0) { return Point3(p.x, p.y, z); }
+
 //-------------------------------------------
 // SEGMENT 2 CLASS 
 //-------------------------------------------
