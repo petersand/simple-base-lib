@@ -134,10 +134,12 @@ aptr<MotionField> loadMotionField( File &file ) {
 		warning( "invalid motion field header" );
 		return mf;
 	}
-	int version = 0;
+	// TODO: should version be used?
+	// commented out due to -Werror
+	// int version = 0;
 	int width = file.readInt();
 	if (width == 0) {
-		version = file.readInt();
+		// version = file.readInt();
 		width = file.readInt();
 	}
 	int height = file.readInt();

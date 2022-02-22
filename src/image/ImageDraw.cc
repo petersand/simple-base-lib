@@ -301,7 +301,7 @@ void drawText( ImageColorU &img, const String &text, int x, int y, int r, int g,
 		for (int i = 0; i < len; i++) {
 			int asc = text.get( i );
 			int xDest = i * g_letterWidth * scale;
-			if ((asc > 32 || asc < 128) && x + xDest >= 0 && x + xDest + g_letterWidth * scale <= width) {
+			if ((32 <= asc && asc <= 127) && x + xDest >= 0 && x + xDest + g_letterWidth * scale <= width) {
 				int xSrc = (asc - 32) * g_letterWidth;
 				for (int dy = 0; dy < g_letterHeight * scale; dy++)
 					for (int dx = 0; dx < g_letterWidth * scale; dx++) {
