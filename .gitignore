@@ -12,4 +12,5 @@ build/*.ncb
 build/*.user
 build/*.sln
 build/.vs
-
+.cache
+compile_commands.json

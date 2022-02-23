@@ -109,18 +109,35 @@ public:
 	/// create an Image object wrapping an IplImage object
 	Image( IplImage *iplImage, bool deallocIplImage );
 
+	/// create an Image object wrapping a cv::Mat object
+	Image( cv::Mat img );
+
 	/// return IplImage object; create object if needed
     inline IplImage *iplImage() { if (m_iplImage == NULL) createIplImage(); return m_iplImage; } 
 	inline const IplImage *iplImage() const { if (m_iplImage == NULL) createIplImage(); return m_iplImage; }
 
+	/// return cv::Mat object; create object if needed
+	inline cv::Mat cvMat() {
+		if (m_cvMat.empty()) {
+			createCvMat();
+		}
+		return m_cvMat;
+	}
+
 private:
 
-    /// create object if needed (m_iplImage is mutable so this func can be const)
+    /// create IplImage object if needed (m_iplImage is mutable so this func can be const)
     void createIplImage() const;
+
+	/// create cv::Mat object if needed
+	void createCvMat();
 
 	/// the stored IplImage, if any
 	mutable IplImage *m_iplImage;
 	mutable bool m_deallocIplImage;
+
+	/// the stored cv::Mat, if any
+	cv::Mat m_cvMat;
 
 #endif // USE_OPENCV
 };
@@ -276,7 +293,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage
 }
 
 
-/// create object if needed (m_iplImage is mutable so this func can be const)
+/// create IplImage object if needed (m_iplImage is mutable so this func can be const)
 template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplImage() const {
     assert( m_iplImage == NULL );
 	m_iplImage = new IplImage;
@@ -309,6 +326,51 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplI
     m_iplImage->maskROI = NULL;
     m_iplImage->imageId = NULL;
     m_iplImage->tileInfo = NULL;
+}
+
+
+/// create an ImageColor object wrapping a cv::Mat object
+template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( cv::Mat img ) {
+	assertAlways( img.channels() == CHANNEL_COUNT );
+	assertAlways( img.elemSize1() == sizeof(T) );
+	m_width = img.cols;
+    m_height = img.rows;
+	int rowWidth = img.cols * CHANNEL_COUNT;
+    m_rowBytes = rowWidth * sizeof( T );
+    m_raw = (T *) img.data;
+    m_cvMat = img;
+	m_deleteRaw = false;
+	m_deallocIplImage = false;
+
+    // create row pointers
+	m_ptr = new T*[ m_height ];
+	if (m_ptr == NULL) {
+		fatalError( "error allocating ImageColor pointers" );
+	}
+	for (int i = 0; i < m_height; i++) {
+		m_ptr[ i ] = m_raw + i * rowWidth;
+	}
+}
+
+
+/// create cv::Mat object if needed
+template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createCvMat() {
+    assert( m_cvMat.empty() );
+
+	// determine type
+	int type;
+	if (isFloat()) {
+		type = CV_32FC(CHANNEL_COUNT);
+	} else if (depth() == 8) {
+		type = CV_8UC(CHANNEL_COUNT);
+	} else if (depth() == 16) {
+		type = CV_16UC(CHANNEL_COUNT);
+	} else {
+		type = CV_32SC(CHANNEL_COUNT);
+	}
+
+	// create cv::Mat object
+	m_cvMat = cv::Mat(cv::Size(m_width, m_height), type, m_raw);
 }
 
 
