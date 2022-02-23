@@ -357,20 +357,12 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( cv::Mat 
 template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createCvMat() {
     assert( m_cvMat.empty() );
 
-	// determine type
-	int type;
-	if (isFloat()) {
-		type = CV_32FC(CHANNEL_COUNT);
-	} else if (depth() == 8) {
-		type = CV_8UC(CHANNEL_COUNT);
-	} else if (depth() == 16) {
-		type = CV_16UC(CHANNEL_COUNT);
-	} else {
-		type = CV_32SC(CHANNEL_COUNT);
-	}
+	// determine parameters of cv::Mat constructor
+	cv::Size size = cv::Size(m_width, m_height);
+	int type = CV_MAKETYPE(cv::DataType<T>::type, CHANNEL_COUNT);
 
 	// create cv::Mat object
-	m_cvMat = cv::Mat(cv::Size(m_width, m_height), type, m_raw);
+	m_cvMat = cv::Mat(size, type, m_raw);
 }
 
 
