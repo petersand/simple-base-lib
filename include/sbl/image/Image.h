@@ -109,9 +109,6 @@ public:
 	/// create an Image object wrapping an IplImage object
 	Image( IplImage *iplImage, bool deallocIplImage );
 
-	/// create an Image object wrapping a cv::Mat object
-	Image( cv::Mat img );
-
 	/// return IplImage object; create object if needed
     inline IplImage *iplImage() { if (m_iplImage == NULL) createIplImage(); return m_iplImage; } 
 	inline const IplImage *iplImage() const { if (m_iplImage == NULL) createIplImage(); return m_iplImage; }
@@ -332,31 +329,6 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplI
     m_iplImage->maskROI = NULL;
     m_iplImage->imageId = NULL;
     m_iplImage->tileInfo = NULL;
-}
-
-
-/// create an ImageColor object wrapping a cv::Mat object
-template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( cv::Mat img ) {
-	assertAlways( img.channels() == CHANNEL_COUNT );
-	assertAlways( img.elemSize1() == sizeof(T) );
-	m_width = img.cols;
-    m_height = img.rows;
-	int rowWidth = img.cols * CHANNEL_COUNT;
-    m_rowBytes = rowWidth * sizeof( T );
-    m_raw = (T *) img.data;
-    m_cvMat = img;
-	m_iplImage = NULL;
-	m_deleteRaw = false;
-	m_deallocIplImage = false;
-
-    // create row pointers
-	m_ptr = new T*[ m_height ];
-	if (m_ptr == NULL) {
-		fatalError( "error allocating ImageColor pointers" );
-	}
-	for (int i = 0; i < m_height; i++) {
-		m_ptr[ i ] = m_raw + i * rowWidth;
-	}
 }
 
 
