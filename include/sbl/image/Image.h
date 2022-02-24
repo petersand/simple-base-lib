@@ -123,6 +123,12 @@ public:
 		}
 		return m_cvMat;
 	}
+	inline const cv::Mat cvMat() const {
+		if (m_cvMat.empty()) {
+			createCvMat();
+		}
+		return m_cvMat;
+	}
 
 private:
 
@@ -130,14 +136,14 @@ private:
     void createIplImage() const;
 
 	/// create cv::Mat object if needed
-	void createCvMat();
+	void createCvMat() const;
 
 	/// the stored IplImage, if any
 	mutable IplImage *m_iplImage;
 	mutable bool m_deallocIplImage;
 
 	/// the stored cv::Mat, if any
-	cv::Mat m_cvMat;
+	mutable cv::Mat m_cvMat;
 
 #endif // USE_OPENCV
 };
@@ -339,6 +345,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( cv::Mat 
     m_rowBytes = rowWidth * sizeof( T );
     m_raw = (T *) img.data;
     m_cvMat = img;
+	m_iplImage = NULL;
 	m_deleteRaw = false;
 	m_deallocIplImage = false;
 
@@ -354,7 +361,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( cv::Mat 
 
 
 /// create cv::Mat object if needed
-template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createCvMat() {
+template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createCvMat() const {
     assert( m_cvMat.empty() );
 
 	// determine parameters of cv::Mat constructor
