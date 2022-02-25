@@ -113,14 +113,34 @@ public:
     inline IplImage *iplImage() { if (m_iplImage == NULL) createIplImage(); return m_iplImage; } 
 	inline const IplImage *iplImage() const { if (m_iplImage == NULL) createIplImage(); return m_iplImage; }
 
+	/// return cv::Mat object; create object if needed
+	inline cv::Mat cvMat() {
+		if (m_cvMat.empty()) {
+			createCvMat();
+		}
+		return m_cvMat;
+	}
+	inline const cv::Mat cvMat() const {
+		if (m_cvMat.empty()) {
+			createCvMat();
+		}
+		return m_cvMat;
+	}
+
 private:
 
-    /// create object if needed (m_iplImage is mutable so this func can be const)
+    /// create IplImage object if needed (m_iplImage is mutable so this func can be const)
     void createIplImage() const;
+
+	/// create cv::Mat object if needed
+	void createCvMat() const;
 
 	/// the stored IplImage, if any
 	mutable IplImage *m_iplImage;
 	mutable bool m_deallocIplImage;
+
+	/// the stored cv::Mat, if any
+	mutable cv::Mat m_cvMat;
 
 #endif // USE_OPENCV
 };
@@ -276,7 +296,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage
 }
 
 
-/// create object if needed (m_iplImage is mutable so this func can be const)
+/// create IplImage object if needed (m_iplImage is mutable so this func can be const)
 template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplImage() const {
     assert( m_iplImage == NULL );
 	m_iplImage = new IplImage;
@@ -309,6 +329,19 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplI
     m_iplImage->maskROI = NULL;
     m_iplImage->imageId = NULL;
     m_iplImage->tileInfo = NULL;
+}
+
+
+/// create cv::Mat object if needed
+template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createCvMat() const {
+    assert( m_cvMat.empty() );
+
+	// determine parameters of cv::Mat constructor
+	cv::Size size = cv::Size(m_width, m_height);
+	int type = CV_MAKETYPE(cv::DataType<T>::type, CHANNEL_COUNT);
+
+	// create cv::Mat object
+	m_cvMat = cv::Mat(size, type, m_raw);
 }
 
 
