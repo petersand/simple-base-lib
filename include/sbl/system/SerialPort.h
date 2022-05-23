@@ -6,7 +6,7 @@ namespace sbl {
 
 class SerialHandler {
 public:
-	virtual bool processSerialMessage(const String &message) = 0;
+	virtual bool handleSerialMessage(const String &message) = 0;
 };
 
 

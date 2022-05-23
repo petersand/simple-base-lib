@@ -41,7 +41,7 @@ public:
 	inline bool occDefined() const { return m_occMask != NULL; }
 	inline int occ( int x, int y ) const { return m_occMask->data( x, y ); }
 	inline int occSafe( int x, int y ) const { return m_occMask ? m_occMask->data( x, y ) :  0; }
-	inline void setOcc( int x, int y, int val ) { m_occMask->data( x, y ) = val; }
+	inline void setOcc( int x, int y, unsigned char val ) { m_occMask->data( x, y ) = val; }
 	inline ImageGrayU &occRef() { return *m_occMask; }
 	inline const ImageGrayU &occRef() const { return *m_occMask; }
 
