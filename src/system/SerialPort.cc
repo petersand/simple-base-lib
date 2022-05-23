@@ -221,7 +221,7 @@ void SerialPort::checkForMessages() {
 
 			// pass non-ack messages to handler (if specified)
 			} else if (m_handler) {
-				m_handler->processSerialMessage(message);
+				m_handler->handleSerialMessage(message);
 			}
 		}
 	}
