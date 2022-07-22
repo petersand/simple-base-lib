@@ -38,7 +38,7 @@ public:
 		return *this;
 	}
 
-	template <typename T> _Point2 operator*=(T const& scalar) {
+	template <typename S> _Point2 operator*=(S const& scalar) {
 		x *= scalar;
 		y *= scalar;
 		return *this;
@@ -73,13 +73,13 @@ public:
 	// note: this class uses default copy constructor and assignment operator
 
 	/// create a point
-    _Point3( double xIn, double yIn, double zIn ) : x( xIn ), y( yIn ), z( zIn ) {}
-    _Point3() : x( 0 ), y( 0 ), z( 0 ) {}
+    _Point3(T xIn, T yIn, T zIn) : x(xIn), y(yIn), z(zIn) {}
+    _Point3() : x(0), y(0), z(0) {}
 
     /// coordinates
-    double x;
-    double y;
-    double z;
+    T x;
+    T y;
+    T z;
 
 	// operators
 
@@ -97,7 +97,7 @@ public:
 		return *this;
 	}
 
-	template <typename T> _Point3 operator*=(T const& scalar) {
+	template <typename S> _Point3 operator*=(S const& scalar) {
 		x *= scalar;
 		y *= scalar;
 		z *= scalar;
