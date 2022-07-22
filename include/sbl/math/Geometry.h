@@ -11,34 +11,34 @@ namespace sbl {
 
 
 /// The Point2 class represents a 2D Euclidean point.
-class Point2 {
+template<typename T> class _Point2 {
 public:
 
 	// note: this class uses default copy constructor and assignment operator
 
     /// create a point
-    Point2( double xIn, double yIn ) : x( xIn ), y( yIn ) {}
-	Point2() : x(0), y(0) {}  // need default constructor to make vectors of points
+    _Point2(T xIn, T yIn) : x( xIn ), y( yIn ) {}
+	_Point2() : x(0), y(0) {}  // need default constructor to make vectors of points
 
     /// coordinates
-    double x;
-    double y;
+    T x;
+    T y;
 
 	// operators
 
-	Point2 operator+=(Point2 const& p) {
+	_Point2 operator+=(_Point2 const& p) {
 		x += p.x;
 		y += p.y;
 		return *this;
 	}
 
-	Point2 operator-=(Point2 const& p) {
+	_Point2 operator-=(_Point2 const& p) {
 		x -= p.x;
 		y -= p.y;
 		return *this;
 	}
 
-	template <typename T> Point2 operator*=(T const& scalar) {
+	template <typename T> _Point2 operator*=(T const& scalar) {
 		x *= scalar;
 		y *= scalar;
 		return *this;
@@ -48,10 +48,18 @@ public:
 // rest of operators implemented as non-member functions
 // ref: https://stackoverflow.com/questions/14482380/multiplying-an-object-with-a-constant-from-left-side
 
-inline Point2 operator+(Point2 p1, Point2 const& p2) { return (p1 += p2); };
-inline Point2 operator-(Point2 p1, Point2 const& p2) { return (p1 -= p2); };
-template <typename T> inline Point2 operator*(T const& scalar, Point2 p) { return (p *= scalar); };
-template <typename T> inline Point2 operator*(Point2 p, T const& scalar) { return (p *= scalar); };
+template <typename T> inline _Point2<T> operator+(_Point2<T> p1, _Point2<T> const& p2) { return (p1 += p2); };
+template <typename T> inline _Point2<T> operator-(_Point2<T> p1, _Point2<T> const& p2) { return (p1 -= p2); };
+template <typename T, typename S> inline _Point2<T> operator*(S const& scalar, _Point2<T> p) { return (p *= scalar); };
+template <typename T, typename S> inline _Point2<T> operator*(_Point2<T> p, S const& scalar) { return (p *= scalar); };
+
+
+typedef _Point2<unsigned char> Point2U;
+typedef _Point2<int> Point2I;
+typedef _Point2<float> Point2F;
+typedef _Point2<double> Point2D;
+typedef _Point2<double> Point2;  // TODO: remove this and rename _Point2 to Point2 after other code is migrated
+
 
 //-------------------------------------------
 // POINT 3 CLASS 
@@ -59,14 +67,14 @@ template <typename T> inline Point2 operator*(Point2 p, T const& scalar) { retur
 
 
 /// The Point3 class represents a 3D Euclidean point.
-class Point3 {
+template <typename T> class _Point3 {
 public:
 
 	// note: this class uses default copy constructor and assignment operator
 
 	/// create a point
-    Point3( double xIn, double yIn, double zIn ) : x( xIn ), y( yIn ), z( zIn ) {}
-    Point3() : x( 0 ), y( 0 ), z( 0 ) {}
+    _Point3( double xIn, double yIn, double zIn ) : x( xIn ), y( yIn ), z( zIn ) {}
+    _Point3() : x( 0 ), y( 0 ), z( 0 ) {}
 
     /// coordinates
     double x;
@@ -75,21 +83,21 @@ public:
 
 	// operators
 
-	Point3 operator+=(Point3 const& p) {
+	_Point3 operator+=(_Point3 const& p) {
 		x += p.x;
 		y += p.y;
 		z += p.z;
 		return *this;
 	}
 
-	Point3 operator-=(Point3 const& p) {
+	_Point3 operator-=(_Point3 const& p) {
 		x -= p.x;
 		y -= p.y;
 		z -= p.z;
 		return *this;
 	}
 
-	template <typename T> Point3 operator*=(T const& scalar) {
+	template <typename T> _Point3 operator*=(T const& scalar) {
 		x *= scalar;
 		y *= scalar;
 		z *= scalar;
@@ -97,22 +105,30 @@ public:
 	}
 
 	// conversion function
-	Point2 toXY() const {
-		return Point2(x, y);
+	_Point2<T> toXY() const {
+		return _Point2<T>(x, y);
 	}
 };
 
 // rest of operators implemented as non-member functions
 // ref: https://stackoverflow.com/questions/14482380/multiplying-an-object-with-a-constant-from-left-side
 
-inline Point3 operator+(Point3 p1, Point3 const& p2) { return (p1 += p2); };
-inline Point3 operator-(Point3 p1, Point3 const& p2) { return (p1 -= p2); };
-template <typename T> inline Point3 operator*(T const& scalar, Point3 p) { return (p *= scalar); };
-template <typename T> inline Point3 operator*(Point3 p, T const& scalar) { return (p *= scalar); };
+template <typename T> inline _Point3<T> operator+(_Point3<T> p1, _Point3<T> const& p2) { return (p1 += p2); };
+template <typename T> inline _Point3<T> operator-(_Point3<T> p1, _Point3<T> const& p2) { return (p1 -= p2); };
+template <typename T, typename S> inline _Point3<T> operator*(S const& scalar, _Point3<T> p) { return (p *= scalar); };
+template <typename T, typename S> inline _Point3<T> operator*(_Point3<T> p, S const& scalar) { return (p *= scalar); };
 
 // converting 2D to 3D
 
-inline Point3 xy2xyz(Point2 const& p, double z=0) { return Point3(p.x, p.y, z); }
+template <typename T> inline _Point3<T> xy2xyz(_Point2<T> const& p, T z=0) { return _Point3<T>(p.x, p.y, z); }
+
+
+typedef _Point3<unsigned char> Point3U;
+typedef _Point3<int> Point3I;
+typedef _Point3<float> Point3F;
+typedef _Point3<double> Point3D;
+typedef _Point3<double> Point3;  // TODO: remove this and rename _Point2 to Point2 after other code is migrated
+
 
 //-------------------------------------------
 // SEGMENT 2 CLASS 
