@@ -522,7 +522,7 @@ void registerCleanUp( void (*callback)() ) {
 void runScript( Config &conf ) {
 
 	// get command parameters
-	String fileName = addDataPath( conf.readString( "fileName", dataPath() + "script.txt" ) );
+	String fileName = addDataPath(conf.readString("fileName", "script.txt"));
 	if (conf.initialPass())
 		return;
 

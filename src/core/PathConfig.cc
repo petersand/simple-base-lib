@@ -32,14 +32,10 @@ void savePathConfig() {
 String g_logPath;
 
 
-/// the application's log path, as defined in the path config
+/// the application's log path, as defined in the path config; our convention is that paths do not have a trailing slash
 String logPath() {
 	if (g_logPath.length() == 0) {
         g_logPath = pathConfig().readString( "logPath" );
-
-		// make sure path ends with a slash (or backslash)
-		if (g_logPath.endsWith( "/" ) == false || g_logPath.endsWith( "\\" ) == false)
-			g_logPath += "/";
 	}
 	return g_logPath;
 }
@@ -49,14 +45,10 @@ String logPath() {
 String g_dataPath;
 
 
-/// the application's data path, as defined in the path config
+/// the application's data path, as defined in the path config; our convention is that paths do not have a trailing slash
 String dataPath() {
 	if (g_dataPath.length() == 0) {
         g_dataPath = pathConfig().readString( "dataPath" );
-
-		// make sure path ends with a slash (or backslash)
-		if (g_dataPath.endsWith( "/" ) == false || g_dataPath.endsWith( "\\" ) == false)
-			g_dataPath += "/";
 	}
 	return g_dataPath;
 }
@@ -68,12 +60,12 @@ String addDataPath( const String &fileName ) {
 	if (isAbsoluteFileName( fileName ))
 		result = fileName;
 	else 
-		result = dataPath() + fileName;
+		result = dataPath() + "/" + fileName;
 	return result;
 }
 
 
-/// set the application's data path, so that we don't need the path config
+/// set the application's data path, so that we don't need the path config; our convention is that paths do not have a trailing slash
 /// (if this isn't called before the first call to dataPath(), the earlier dataPath() call will use the main config)
 void setDataPath( const String &dataPath ) {
 	g_dataPath = dataPath;
