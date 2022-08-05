@@ -6,6 +6,7 @@
 #ifdef USE_OPENCV
     #include <opencv/cv.h>
     #include <opencv/highgui.h>
+	#include <opencv2/imgcodecs.hpp>
 #endif
 #ifdef USE_GUI
 	#include <sbl/gui/ImageSeqViewer.h>
@@ -567,7 +568,7 @@ VectorI imageHistogram( const ImageGrayU &image, int xMin, int xMax, int yMin, i
 /// save image to file (format determined by extension)
 template <typename ImageType> void saveImage( const ImageType &img, const String &fileName ) {
 #ifdef USE_OPENCV
-	cvSaveImage( fileName.c_str(), img.iplImage() );
+	cv::imwrite(fileName.c_str(), img.cvMat());
 #else
 	fatalError( "not implemented" );
 #endif
@@ -582,12 +583,8 @@ template void saveImage( const ImageColorF &img, const String &fileName );
 template <typename ImageType> aptr<ImageType> load( const String &fileName ) {
 	aptr<ImageType> img;
 #ifdef USE_OPENCV
-	IplImage *iplImg = cvLoadImage( fileName.c_str(), CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR );
-	if (iplImg) {
-		img.reset( new ImageType(iplImg, true));
-	} else {
-		warning( "unable to load image: %s", fileName.c_str() );
-	}
+	cv::Mat mat = cv::imread(fileName.c_str());
+	img.reset(new ImageType(mat));
 #else
 	fatalError( "not implemented" );
 #endif

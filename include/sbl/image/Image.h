@@ -106,21 +106,22 @@ private:
 #ifdef USE_OPENCV
 public:
 
-	/// create an Image object wrapping an IplImage object
-	Image( IplImage *iplImage, bool deallocIplImage );
+	/// create an Image object wrapping an IplImage/CvMat object
+	Image(IplImage *iplImage, bool deallocIplImage);
+	Image(cv::Mat &mat);
 
 	/// return IplImage object; create object if needed
     inline IplImage *iplImage() { if (m_iplImage == NULL) createIplImage(); return m_iplImage; } 
 	inline const IplImage *iplImage() const { if (m_iplImage == NULL) createIplImage(); return m_iplImage; }
 
 	/// return cv::Mat object; create object if needed
-	inline cv::Mat cvMat() {
+	inline cv::Mat& cvMat() {
 		if (m_cvMat.empty()) {
 			createCvMat();
 		}
 		return m_cvMat;
 	}
-	inline const cv::Mat cvMat() const {
+	inline const cv::Mat& cvMat() const {
 		if (m_cvMat.empty()) {
 			createCvMat();
 		}
@@ -158,10 +159,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::~Image() {
 	delete [] m_ptr;
 #ifdef USE_OPENCV
 	if (m_deallocIplImage) {
-		if (m_deleteRaw)
-			delete m_iplImage;
-		else
-			cvReleaseImage( &m_iplImage );
+		delete m_iplImage;
 	}
 #endif
 }
@@ -171,10 +169,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::~Image() {
 template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::alloc( int width, int height ) {
 	m_width = width;
 	m_height = height;
-
-	// require quad-word alignment for rows 
-	// (round up to nearest mult of 8)
-	m_rowBytes = (m_width * sizeof( T ) * CHANNEL_COUNT + 7) & (0xffff - 7);
+	m_rowBytes = m_width * sizeof(T) * CHANNEL_COUNT;
 	int rowWidth = m_rowBytes / sizeof( T );
 	assertDebug( rowWidth >= m_width );
 	int size = rowWidth * m_height; // total number of elements
@@ -274,8 +269,9 @@ template<typename T, int CHANNEL_COUNT> float Image<T, CHANNEL_COUNT>::interp( f
 #ifdef USE_OPENCV
 
 
-/// create an ImageColor object wrapping an IplImage object
+/// create an Image object wrapping an IplImage object
 template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage *iplImage, bool deallocIplImage ) {
+	warning("may leak memory");  // we're in the process of removing this; deallocation has changed
 	assertAlways( iplImage->nChannels == CHANNEL_COUNT ); 
 //	assertAlways( iplImage->origin == IPL_ORIGIN_BL );
 //	assertAlways( sizeof( T ) == 1 ? iplImage->depth == 8 : iplImage->depth == 4 ); // assuming U or F type
@@ -290,7 +286,33 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage
 
     // create row pointers
 	m_ptr = new T*[ m_height ];
-	if (m_ptr == NULL) fatalError( "error allocating ImageColor pointers" );
+	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
+	for (int i = 0; i < m_height; i++)
+		m_ptr[ i ] = m_raw + i * rowWidth;
+}
+
+
+/// create an Image object wrapping a CvMat object
+template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image(cv::Mat &mat) {
+	assertAlways(mat.channels() == CHANNEL_COUNT);
+	m_width = mat.cols;
+	m_height = mat.rows;
+	int bytesPerElement = 0;
+	if (mat.depth() == CV_8U) {  // can we use mat.elemSize instead?
+		bytesPerElement = 1;
+	} else {
+		fatalError("depth not supported");
+	}
+	int rowWidth = mat.cols * bytesPerElement * mat.channels();  // this won't work if there is any per-row padding
+	m_rowBytes = rowWidth * sizeof(T);
+	m_raw = (T *) mat.data;
+	m_cvMat = mat;
+	m_iplImage = NULL;  // we'll create this later on-depand if needed
+	m_deleteRaw = false;
+
+	// create row pointers
+	m_ptr = new T*[ m_height ];
+	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
 	for (int i = 0; i < m_height; i++)
 		m_ptr[ i ] = m_raw + i * rowWidth;
 }
