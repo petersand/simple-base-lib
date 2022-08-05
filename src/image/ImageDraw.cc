@@ -285,7 +285,8 @@ void drawText( ImageColorU &img, const String &text, int x, int y, int r, int g,
 
 	// load text image if not done already
 	if (g_textImg.get() == NULL) {
-		g_textImg = load<ImageGrayU>( "text.bmp" );
+		aptr<ImageColorU> textColor = load<ImageColorU>( "text.bmp" );
+		g_textImg = toGray(*textColor);
 	}
 
 	// skip out if out of image vertically

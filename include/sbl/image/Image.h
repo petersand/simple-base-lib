@@ -30,7 +30,7 @@ namespace sbl {
 //-------------------------------------------
 
 
-/// The ImageColor class represents a multi-channel (e.g. RGB) image.
+/// The Image class represents a single-channle (grayscale) or multi-channel (e.g. RGB) image.
 template <typename T, int CHANNEL_COUNT > class Image {
 public:
 
@@ -90,8 +90,8 @@ private:
 	void alloc( int width, int height );
 
 	// image data
-	T *m_raw;
-	T **m_ptr;
+	T *m_raw;  // top origin
+	T **m_ptr;  // bottom origin for now
 	int m_width;
 	int m_height;
 	int m_rowBytes;
@@ -181,7 +181,7 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::alloc( int
 
 	// alloc pixel data
 	m_raw = new T[ size ];
-	if (m_raw == NULL) fatalError( "error allocating ImageColor data" );
+	if (m_raw == NULL) fatalError( "error allocating Image data" );
 	m_deleteRaw = true;
 
 	// check alignment
@@ -190,9 +190,9 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::alloc( int
 
 	// create row pointers
 	m_ptr = new T*[ m_height ];
-	if (m_ptr == NULL) fatalError( "error allocating ImageColor pointers" );
+	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
 	for (int i = 0; i < m_height; i++)
-		m_ptr[ i ] = m_raw + i * rowWidth;
+		m_ptr[ i ] = m_raw + (m_height - i - 1) * rowWidth;  // m_ptr will have bottom origin for now
 
     // init IPL pointer, if defined
 #ifdef USE_OPENCV
@@ -292,7 +292,7 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage
 	m_ptr = new T*[ m_height ];
 	if (m_ptr == NULL) fatalError( "error allocating ImageColor pointers" );
 	for (int i = 0; i < m_height; i++)
-		m_ptr[ i ] = m_raw + i * rowWidth;
+		m_ptr[ i ] = m_raw + (m_height - i - 1) * rowWidth;
 }
 
 
@@ -309,7 +309,7 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplI
     m_iplImage->width = m_width;
     m_iplImage->height = m_height;
     m_iplImage->dataOrder = IPL_DATA_ORDER_PIXEL;
-    m_iplImage->origin = IPL_ORIGIN_BL;
+    m_iplImage->origin = IPL_ORIGIN_TL;  // using top origin for raw data
 	if (isFloat()) {
 		m_iplImage->depth = IPL_DEPTH_32F;
 	} else if (depth() == 8) {

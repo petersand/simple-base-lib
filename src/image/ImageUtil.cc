@@ -584,9 +584,7 @@ template <typename ImageType> aptr<ImageType> load( const String &fileName ) {
 #ifdef USE_OPENCV
 	IplImage *iplImg = cvLoadImage( fileName.c_str(), CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR );
 	if (iplImg) {
-		img.reset( new ImageType( iplImg->width, iplImg->height ) );
-		cvConvertImage( iplImg, img->iplImage(), CV_CVTIMG_FLIP ); // image is loaded using TL origin, but we assume BL origin
-		cvReleaseImage( &iplImg );
+		img.reset( new ImageType(iplImg, true));
 	} else {
 		warning( "unable to load image: %s", fileName.c_str() );
 	}
