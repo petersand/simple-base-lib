@@ -4,9 +4,8 @@
 #include <sbl/math/MatrixUtil.h> // for mutual info
 #include <sbl/image/Filter.h> // for filter registry
 #ifdef USE_OPENCV
-    #include <opencv/cv.h>
-    #include <opencv/highgui.h>
 	#include <opencv2/imgcodecs.hpp>
+	#include <opencv2/imgproc.hpp>
 #endif
 #ifdef USE_GUI
 	#include <sbl/gui/ImageSeqViewer.h>
@@ -24,7 +23,7 @@ aptr<ImageGrayU> toGray( const ImageColorU &input ) {
 	int width = input.width(), height = input.height();
 	aptr<ImageGrayU> output( new ImageGrayU( width, height ) );
 #ifdef USE_OPENCV
-    cvCvtColor( input.iplImage(), output->iplImage(), CV_BGR2GRAY );
+    cv::cvtColor(input.cvMat(), output->cvMat(), cv::COLOR_BGR2GRAY);
 #endif
 	return output;
 }
@@ -35,7 +34,7 @@ aptr<ImageColorU> toColor( const ImageGrayU &input ) {
 	int width = input.width(), height = input.height();
 	aptr<ImageColorU> output( new ImageColorU( width, height ) );
 #ifdef USE_OPENCV
-    cvCvtColor( input.iplImage(), output->iplImage(), CV_GRAY2BGR );
+    cv::cvtColor(input.cvMat(), output->cvMat(), cv::COLOR_GRAY2BGR);
 #endif
 	return output;
 }
@@ -125,9 +124,9 @@ template <typename ImageType> aptr<ImageType> blurBox( const ImageType &input, i
 	int width = input.width(), height = input.height();
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
-    cvSmooth( input.iplImage(), output->iplImage(), CV_BLUR, boxSize, boxSize );
+	cv::blur(input.cvMat(), output->cvMat(), cv::Size(3, 3));
 #else
-	fatalError( "not implemented" );
+	fatalError("blurBox not implemented");
 #endif
 	return output;
 }
@@ -143,9 +142,9 @@ template <typename ImageType> aptr<ImageType> blurGauss( const ImageType &input,
 	int width = input.width(), height = input.height();
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
-    cvSmooth( input.iplImage(), output->iplImage(), CV_GAUSSIAN, 0, 0, sigma, sigma );
+	cv::GaussianBlur(input.cvMat(), output->cvMat(), cv::Size(0, 0), sigma);  // compute kernel size from sigma
 #else
-	fatalError( "not implemented" );
+	fatalError("blurGauss not implemented");
 #endif
 	return output;
 }
@@ -160,7 +159,8 @@ template <typename ImageType> aptr<ImageType> median( const ImageType &input, in
 	int width = input.width(), height = input.height();
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
-    cvSmooth( input.iplImage(), output->iplImage(), CV_MEDIAN, apertureSize, apertureSize );
+	fatalError("median not implemented");
+	// cvSmooth(input.iplImage(), output->iplImage(), CV_MEDIAN, apertureSize, apertureSize);
 #endif
 	return output;
 }
@@ -175,9 +175,10 @@ template <typename ImageType> aptr<ImageGrayF> xGrad( const ImageType &input, in
 	int width = input.width(), height = input.height();
 	aptr<ImageGrayF> output( new ImageGrayF( width, height ) );
 #ifdef USE_OPENCV
-    cvSobel( input.iplImage(), output->iplImage(), 1, 0, apertureSize );
+	fatalError("xGrad not implemented");
+	// cvSobel(input.iplImage(), output->iplImage(), 1, 0, apertureSize);
 #else
-	fatalError( "not implemented" );
+	fatalError("xGrad not implemented");
 #endif
 	return output;
 }
@@ -190,7 +191,8 @@ template <typename ImageType> aptr<ImageGrayF> yGrad( const ImageType &input, in
 	int width = input.width(), height = input.height();
 	aptr<ImageGrayF> output( new ImageGrayF( width, height ) );
 #ifdef USE_OPENCV
-    cvSobel( input.iplImage(), output->iplImage(), 0, 1, apertureSize );
+	fatalError("yGrad not implemented");
+	// cvSobel(input.iplImage(), output->iplImage(), 0, 1, apertureSize);
 #endif
 	return output;
 }
@@ -220,9 +222,10 @@ template <typename ImageType> aptr<ImageType> threshold( const ImageType &input,
 	int width = input.width(), height = input.height();
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
-	cvThreshold( input.iplImage(), output->iplImage(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY );
+	cv::threshold(input.cvMat(), output->cvMat(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY);
+	// cvThreshold(input.iplImage(), output->iplImage(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY);
 #else
-	fatalError( "not implemented" );
+	fatalError("threshold not implemented");
 #endif
 	return output;
 }
@@ -247,10 +250,11 @@ aptr<ImageGrayU> blurBoxAndThreshold( const ImageGrayU &input, int boxSize, int 
 	int width = input.width(), height = input.height();
 	aptr<ImageGrayU> output( new ImageGrayU( width, height ) );
 #ifdef USE_OPENCV
-    cvSmooth( input.iplImage(), output->iplImage(), CV_BLUR, boxSize, boxSize );
-    cvThreshold( output->iplImage(), output->iplImage(), thresh, 255, CV_THRESH_BINARY );
+	fatalError("blurBoxAndThreshold not implemented");
+	// cvSmooth( input.iplImage(), output->iplImage(), CV_BLUR, boxSize, boxSize);
+	// cvThreshold( output->iplImage(), output->iplImage(), thresh, 255, CV_THRESH_BINARY);
 #else
-	fatalError( "not implemented" );
+	fatalError("blurBoxAndThreshold not implemented");
 #endif
 	return output;
 }
@@ -262,14 +266,14 @@ aptr<ImageGrayU> blurBoxAndThreshold( const ImageGrayF &input, int boxSize, floa
 	ImageGrayF smooth( width, height );
 	aptr<ImageGrayU> output( new ImageGrayU( width, height ) );
 #ifdef USE_OPENCV
-    cvSmooth( input.iplImage(), smooth.iplImage(), CV_BLUR, boxSize, boxSize );
-    cvThreshold( smooth.iplImage(), output->iplImage(), thresh, 255, CV_THRESH_BINARY );
+	fatalError("blurBoxAndThreshold not implemented");
+	// cvSmooth( input.iplImage(), smooth.iplImage(), CV_BLUR, boxSize, boxSize);
+	// cvThreshold( smooth.iplImage(), output->iplImage(), thresh, 255, CV_THRESH_BINARY);
 #else
-	fatalError( "not implemented" );
+	fatalError("blurBoxAndThreshold not implemented");
 #endif
 	return output;
 }
-
 
 
 /// multiply each pixel value by the specified factor
@@ -570,7 +574,7 @@ template <typename ImageType> void saveImage( const ImageType &img, const String
 #ifdef USE_OPENCV
 	cv::imwrite(fileName.c_str(), img.cvMat());
 #else
-	fatalError( "not implemented" );
+	fatalError("saveImage not implemented");
 #endif
 }
 template void saveImage( const ImageGrayU &img, const String &fileName );
@@ -586,7 +590,7 @@ template <typename ImageType> aptr<ImageType> load( const String &fileName ) {
 	cv::Mat mat = cv::imread(fileName.c_str());
 	img.reset(new ImageType(mat));
 #else
-	fatalError( "not implemented" );
+	fatalError("load image not implemented");
 #endif
 	return img;
 }
