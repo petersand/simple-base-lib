@@ -1,10 +1,7 @@
-// Licensed under MIT license; see license.txt.
-
 #include <sbl/image/ImageTransform.h>
 #include <sbl/math/MathUtil.h>
 #ifdef USE_OPENCV
-	#include <opencv/cv.h>
-	#include <opencv/highgui.h>
+	#include <opencv2/imgproc.hpp>
 #endif
 namespace sbl {
 
@@ -52,7 +49,8 @@ template <typename ImageType> aptr<ImageType> resize( const ImageType &input, in
 	aptr<ImageType> output( new ImageType( newWidth, newHeight ) );
 #ifdef USE_OPENCV
 	int width = input.width();
-	cvResize( input.iplImage(), output->iplImage(), filter ? (newWidth > width ? CV_INTER_LINEAR : CV_INTER_AREA) : CV_INTER_NN );
+	int interp = filter ? (newWidth > width ? cv::INTER_LINEAR : cv::INTER_AREA) : cv::INTER_NEAREST;
+	cv::resize(input.cvMat(), output->cvMat(), cv::Size(newWidth, newHeight), 0, 0, interp);
 #else
 	fatalError( "not implemented" );
 #endif
@@ -74,11 +72,12 @@ template <typename ImageType> aptr<ImageType> shiftScale( const ImageType &input
 	cvmSet( map, 1, 0, 0);
 	cvmSet( map, 1, 1, yScale);
 	cvmSet( map, 1, 2, yOffset );
-	cvWarpAffine( input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( 255 ) );
+	fatalError("warpAffine not implemented");
+	// cvWarpAffine(input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( 255 ));
 	// fix(later): use cvGetQuadrangleSubPix?
 	cvReleaseMat( &map );
 #else
-	fatalError( "not implemented" );
+	fatalError("warpAffine not implemented");
 #endif
 	return output;
 }
@@ -98,11 +97,12 @@ template <typename ImageType> aptr<ImageType> warpAffine( const ImageType &input
 	cvmSet( map, 1, 0, y1 );
 	cvmSet( map, 1, 1, y2 );
 	cvmSet( map, 1, 2, yOffset );
-	cvWarpAffine( input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( fillColor ) );
+	fatalError("warpAffine not implemented");
+	// cvWarpAffine(input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( fillColor ));
 	// fix(later): use cvGetQuadrangleSubPix?
 	cvReleaseMat( &map );
 #else
-	fatalError( "not implemented" );
+	fatalError("warpAffine not implemented");
 #endif
 	return output;
 }
@@ -115,9 +115,9 @@ template aptr<ImageColorU> warpAffine( const ImageColorU &input, float xOffset, 
 template <typename ImageType> aptr<ImageType> flipVert( const ImageType &input ) {
 	aptr<ImageType> output( new ImageType( input.width(), input.height() ) );
 #ifdef USE_OPENCV
-	cvConvertImage( input.iplImage(), output->iplImage(), CV_CVTIMG_FLIP );
+	cv::flip(input.cvMat(), output->cvMat(), 0);
 #else
-	fatalError( "not implemented" );
+	fatalError("flipVert not implemented");
 #endif
 	return output;
 }
@@ -129,9 +129,9 @@ template aptr<ImageColorU> flipVert( const ImageColorU &input );
 template <typename ImageType> aptr<ImageType> flipHoriz( const ImageType &input ) {
 	aptr<ImageType> output( new ImageType( input.width(), input.height() ) );
 #ifdef USE_OPENCV
-	cvFlip(input.iplImage(), output->iplImage(), 1);
+	cv::flip(input.cvMat(), output->cvMat(), 1);
 #else
-	fatalError( "not implemented" );
+	fatalError("flipHoriz not implemented");
 #endif
 	return output;
 }

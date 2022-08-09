@@ -66,11 +66,13 @@ aptr<ImageColorU> InputVideo::frame( int frameIndex ) {
 	if (m_cvCapture) {
 #ifdef USE_OPENCV
 		cvSetCaptureProperty( m_cvCapture, CV_CAP_PROP_POS_FRAMES, frameIndex );
+		/*  TODO: upgrade to C++ OpenCV functions
 		IplImage *iplImg = cvQueryFrame( m_cvCapture );
 		if (iplImg) {
 			ImageColorU imgMustCopy( iplImg, false ); // need to copy this image, because it contains reference to iplImage which we do not own
 			img = flipVert( imgMustCopy );
 		}
+		*/
 #endif
 
 	// image file
@@ -174,9 +176,9 @@ OutputVideo::~OutputVideo() {
 void OutputVideo::append( const ImageColorU &img ) {
 	assertAlways( img.width() == m_width && img.height() == m_height );
 	if (m_videoWriter) {
-		aptr<ImageColorU> flip = flipVert( img ); // fix(asap): this shouldn't be needed!
 #ifdef USE_OPENCV
-		cvWriteFrame( m_videoWriter, flip->iplImage() );
+		// TODO: upgrade to C++ OpenCV functions
+		// cvWriteFrame(m_videoWriter, img->iplImage());
 #endif
 	}
 }
