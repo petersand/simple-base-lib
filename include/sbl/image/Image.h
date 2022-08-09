@@ -106,13 +106,8 @@ private:
 #ifdef USE_OPENCV
 public:
 
-	/// create an Image object wrapping an IplImage/CvMat object
-	Image(IplImage *iplImage, bool deallocIplImage);
+	/// create an Image object wrapping a cv::Mat object
 	Image(cv::Mat &mat);
-
-	/// return IplImage object; create object if needed
-    inline IplImage *iplImage() { if (m_iplImage == NULL) createIplImage(); return m_iplImage; } 
-	inline const IplImage *iplImage() const { if (m_iplImage == NULL) createIplImage(); return m_iplImage; }
 
 	/// return cv::Mat object; create object if needed
 	inline cv::Mat& cvMat() {
@@ -130,15 +125,8 @@ public:
 
 private:
 
-    /// create IplImage object if needed (m_iplImage is mutable so this func can be const)
-    void createIplImage() const;
-
-	/// create cv::Mat object if needed
+	/// create cv::Mat object if needed (m_cvMat is mutable so this func can be const)
 	void createCvMat() const;
-
-	/// the stored IplImage, if any
-	mutable IplImage *m_iplImage;
-	mutable bool m_deallocIplImage;
 
 	/// the stored cv::Mat, if any
 	mutable cv::Mat m_cvMat;
@@ -157,11 +145,6 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::~Image() {
 	if (m_deleteRaw)
 		delete [] m_raw;
 	delete [] m_ptr;
-#ifdef USE_OPENCV
-	if (m_deallocIplImage) {
-		delete m_iplImage;
-	}
-#endif
 }
 
 
@@ -188,12 +171,6 @@ template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::alloc( int
 	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
 	for (int i = 0; i < m_height; i++)
 		m_ptr[ i ] = m_raw + i * rowWidth;
-
-    // init IPL pointer, if defined
-#ifdef USE_OPENCV
-    m_iplImage = NULL;
-	m_deallocIplImage = false;
-#endif
 }
 
 
@@ -269,29 +246,6 @@ template<typename T, int CHANNEL_COUNT> float Image<T, CHANNEL_COUNT>::interp( f
 #ifdef USE_OPENCV
 
 
-/// create an Image object wrapping an IplImage object
-template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image( IplImage *iplImage, bool deallocIplImage ) {
-	warning("may leak memory");  // we're in the process of removing this; deallocation has changed
-	assertAlways( iplImage->nChannels == CHANNEL_COUNT ); 
-//	assertAlways( iplImage->origin == IPL_ORIGIN_BL );
-//	assertAlways( sizeof( T ) == 1 ? iplImage->depth == 8 : iplImage->depth == 4 ); // assuming U or F type
-	m_width = iplImage->width;
-    m_height = iplImage->height;
-	int rowWidth = iplImage->widthStep;
-    m_rowBytes = rowWidth * sizeof( T );
-    m_raw = (T *) iplImage->imageData;
-    m_iplImage = iplImage;
-	m_deleteRaw = false;
-	m_deallocIplImage = deallocIplImage;
-
-    // create row pointers
-	m_ptr = new T*[ m_height ];
-	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
-	for (int i = 0; i < m_height; i++)
-		m_ptr[ i ] = m_raw + i * rowWidth;
-}
-
-
 /// create an Image object wrapping a CvMat object
 template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image(cv::Mat &mat) {
 	assertAlways(mat.channels() == CHANNEL_COUNT);
@@ -307,7 +261,6 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image(cv::Mat &
 	m_rowBytes = rowWidth * sizeof(T);
 	m_raw = (T *) mat.data;
 	m_cvMat = mat;
-	m_iplImage = NULL;  // we'll create this later on-depand if needed
 	m_deleteRaw = false;
 
 	// create row pointers
@@ -315,42 +268,6 @@ template<typename T, int CHANNEL_COUNT> Image<T, CHANNEL_COUNT>::Image(cv::Mat &
 	if (m_ptr == NULL) fatalError( "error allocating Image pointers" );
 	for (int i = 0; i < m_height; i++)
 		m_ptr[ i ] = m_raw + i * rowWidth;
-}
-
-
-/// create IplImage object if needed (m_iplImage is mutable so this func can be const)
-template<typename T, int CHANNEL_COUNT> void Image<T, CHANNEL_COUNT>::createIplImage() const {
-    assert( m_iplImage == NULL );
-	m_iplImage = new IplImage;
-    assert( m_iplImage );
-	m_deallocIplImage = true;
-    // fix(clean): make sure every field is initialized; use cvInitImageHeader?
-    m_iplImage->nSize = sizeof( IplImage );
-    m_iplImage->ID = 0;
-    m_iplImage->nChannels = CHANNEL_COUNT;
-    m_iplImage->width = m_width;
-    m_iplImage->height = m_height;
-    m_iplImage->dataOrder = IPL_DATA_ORDER_PIXEL;
-    m_iplImage->origin = IPL_ORIGIN_TL;
-	if (isFloat()) {
-		m_iplImage->depth = IPL_DEPTH_32F;
-	} else if (depth() == 8) {
-		m_iplImage->depth = IPL_DEPTH_8U;
-	} else if (depth() == 16) {
-		m_iplImage->depth = IPL_DEPTH_16U;
-	} else {
-		m_iplImage->depth = IPL_DEPTH_32S;
-	}
-    m_iplImage->align = IPL_ALIGN_QWORD;
-	m_iplImage->imageSize = m_rowBytes * m_height;
-	m_iplImage->imageData = (char *) m_raw;
-	m_iplImage->widthStep = m_rowBytes;
-	m_iplImage->imageDataOrigin = (char *) m_raw;
-    m_iplImage->imageData = (char *) m_raw;
-    m_iplImage->roi = NULL;
-    m_iplImage->maskROI = NULL;
-    m_iplImage->imageId = NULL;
-    m_iplImage->tileInfo = NULL;
 }
 
 
