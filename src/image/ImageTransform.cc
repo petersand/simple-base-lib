@@ -2,6 +2,7 @@
 #include <sbl/math/MathUtil.h>
 #ifdef USE_OPENCV
 	#include <opencv2/imgproc.hpp>
+	using namespace cv;
 #endif
 namespace sbl {
 
@@ -12,36 +13,28 @@ namespace sbl {
 
 
 /// extract sub-image
-// fix(clean): should unify with grayscale version
-template<> aptr<ImageColorU> crop( const ImageColorU &input, int xMin, int xMax, int yMin, int yMax ) {
-	assertDebug( xMin >= 0 && xMax < input.width() );
-	assertDebug( yMin >= 0 && yMax < input.height() );
-	int newWidth = xMax - xMin + 1;
-	int newHeight = yMax - yMin + 1;
-	aptr<ImageColorU> output( new ImageColorU( newWidth, newHeight ) );
-	for (int y = yMin; y <= yMax; y++) 
-		for (int x = xMin; x <= xMax; x++)
-			for (int c = 0; c < 3; c++)
-				output->data( x - xMin, y - yMin, c ) = input.data( x, y, c );
-	return output;
-}
-
-
-/// extract sub-image
 // fix(faster): use memcpy
 template <typename ImageType> aptr<ImageType> crop( const ImageType &input, int xMin, int xMax, int yMin, int yMax ) {
 	assertDebug( xMin >= 0 && xMax < input.width() );
 	assertDebug( yMin >= 0 && yMax < input.height() );
+	#ifdef USE_OPENCV
+	cv::Mat img = input.cvMat();
+	cv::Mat croppedImg = img( cv::Rect( xMin, yMin, xMax - xMin + 1, yMax - yMin + 1 ) );
+	aptr<ImageType> output( new ImageType( croppedImg ) );
+	#else
 	int newWidth = xMax - xMin + 1;
 	int newHeight = yMax - yMin + 1;
 	aptr<ImageType> output( new ImageType( newWidth, newHeight ) );
 	for (int y = yMin; y <= yMax; y++) 
 		for (int x = xMin; x <= xMax; x++)
-			output->data( x - xMin, y - yMin ) = input.data( x, y );
+			for (int c = 0; c < input.channelCount(); c++)
+				output->data( x - xMin, y - yMin, c ) = input.data( x, y, c );
+	#endif
 	return output;
 }
 template aptr<ImageGrayU> crop( const ImageGrayU &input, int xMin, int xMax, int yMin, int yMax );
 template aptr<ImageGrayF> crop( const ImageGrayF &input, int xMin, int xMax, int yMin, int yMax );
+template aptr<ImageColorU> crop( const ImageColorU &input, int xMin, int xMax, int yMin, int yMax );
 
 
 /// shrink or zoom image
@@ -65,17 +58,9 @@ template aptr<ImageColorU> resize( const ImageColorU &input, int newWidth, int n
 template <typename ImageType> aptr<ImageType> shiftScale( const ImageType &input, float xOffset, float yOffset, float xScale, float yScale, int outputWidth, int outputHeight ) {
 	aptr<ImageType> output( new ImageType( outputWidth, outputHeight ) );
 #ifdef USE_OPENCV
-	CvMat *map = cvCreateMat( 2, 3, CV_32FC1 );
-	cvmSet( map, 0, 0, xScale );
-	cvmSet( map, 0, 1, 0);
-	cvmSet( map, 0, 2, xOffset );
-	cvmSet( map, 1, 0, 0);
-	cvmSet( map, 1, 1, yScale);
-	cvmSet( map, 1, 2, yOffset );
-	fatalError("warpAffine not implemented");
-	// cvWarpAffine(input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( 255 ));
-	// fix(later): use cvGetQuadrangleSubPix?
-	cvReleaseMat( &map );
+	float transform[2][3] = { { xScale, 0, xOffset }, { 0, yScale, yOffset } };
+	Mat map = Mat( 2, 3, CV_32FC1, transform );
+	warpAffine(input.cvMat(), output->cvMat(), map, Size(outputWidth, outputHeight), CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, BORDER_TRANSPARENT, cvScalarAll( 255 ));
 #else
 	fatalError("warpAffine not implemented");
 #endif
@@ -90,17 +75,9 @@ template aptr<ImageColorU> shiftScale( const ImageColorU &input, float xOffset, 
 template <typename ImageType> aptr<ImageType> warpAffine( const ImageType &input, float xOffset, float yOffset, float x1, float y1, float x2, float y2, int outputWidth, int outputHeight, int fillColor ) {
 	aptr<ImageType> output( new ImageType( outputWidth, outputHeight ) );
 #ifdef USE_OPENCV
-	CvMat *map = cvCreateMat( 2, 3, CV_32FC1 );
-	cvmSet( map, 0, 0, x1 );
-	cvmSet( map, 0, 1, x2 );
-	cvmSet( map, 0, 2, xOffset );
-	cvmSet( map, 1, 0, y1 );
-	cvmSet( map, 1, 1, y2 );
-	cvmSet( map, 1, 2, yOffset );
-	fatalError("warpAffine not implemented");
-	// cvWarpAffine(input.iplImage(), output->iplImage(), map, CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, cvScalarAll( fillColor ));
-	// fix(later): use cvGetQuadrangleSubPix?
-	cvReleaseMat( &map );
+	float transform[2][3] = { { x1, x2, xOffset }, { y1, y2, yOffset } };
+	Mat map = Mat( 2, 3, CV_32FC1, transform );
+	warpAffine(input.cvMat(), output->cvMat(), map, Size(outputWidth, outputHeight), CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, BORDER_TRANSPARENT, cvScalarAll( fillColor ));
 #else
 	fatalError("warpAffine not implemented");
 #endif
