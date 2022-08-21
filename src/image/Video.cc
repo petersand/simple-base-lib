@@ -4,7 +4,7 @@
 #include <sbl/system/FileSystem.h>
 #include <sbl/image/ImageUtil.h>
 #include <sbl/image/ImageTransform.h>
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 	#include <opencv/highgui.h>
 #endif
 namespace sbl {
@@ -40,7 +40,7 @@ void InputVideo::open( const String &fileName ) {
 		m_imageList = loadStrings( fileName, false );
 		disp( 1, "image list file count: %d, path: %s", m_imageList.count(), m_imagePath.c_str() );
 	} else {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 		m_cvCapture = cvCreateFileCapture( fileName.c_str() );
 #endif
 	}
@@ -49,7 +49,7 @@ void InputVideo::open( const String &fileName ) {
 
 /// close the video file
 InputVideo::~InputVideo() {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 	if (m_cvCapture)
 		cvReleaseCapture( &m_cvCapture );
 #endif
@@ -64,7 +64,7 @@ aptr<ImageColorU> InputVideo::frame( int frameIndex ) {
 
 	// get frame from OpenCV
 	if (m_cvCapture) {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 		cvSetCaptureProperty( m_cvCapture, CV_CAP_PROP_POS_FRAMES, frameIndex );
 		/*  TODO: upgrade to C++ OpenCV functions
 		IplImage *iplImg = cvQueryFrame( m_cvCapture );
@@ -93,7 +93,7 @@ aptr<ImageGrayU> InputVideo::frameGray( int frameIndex ) {
 int InputVideo::length() { 
 	if (m_length == 0) {
 		if (m_cvCapture) {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 			m_length = round( cvGetCaptureProperty( m_cvCapture, CV_CAP_PROP_FRAME_COUNT ) );
 #endif
 		} else if (m_imageList.count()) {
@@ -152,7 +152,7 @@ OutputVideo::OutputVideo( const String &fileName, int outputWidth, int outputHei
 
 /// open the output video file
 void OutputVideo::open( const String &fileName, int outputWidth, int outputHeight, double fps ) {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 	int fourcc = CV_FOURCC_DEFAULT;
 	if (fileName.endsWith( ".avi" ))
 		fourcc = CV_FOURCC( 'H', 'F', 'Y', 'U' ); // HuffYUV (lossless)
@@ -165,7 +165,7 @@ void OutputVideo::open( const String &fileName, int outputWidth, int outputHeigh
 
 /// close the video file
 OutputVideo::~OutputVideo() {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 	if (m_videoWriter)
 		cvReleaseVideoWriter( &m_videoWriter );
 #endif
@@ -176,7 +176,7 @@ OutputVideo::~OutputVideo() {
 void OutputVideo::append( const ImageColorU &img ) {
 	assertAlways( img.width() == m_width && img.height() == m_height );
 	if (m_videoWriter) {
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 		// TODO: upgrade to C++ OpenCV functions
 		// cvWriteFrame(m_videoWriter, img->iplImage());
 #endif

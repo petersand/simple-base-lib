@@ -222,7 +222,7 @@ template <typename ImageType> aptr<ImageType> threshold( const ImageType &input,
 	int width = input.width(), height = input.height();
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
-	cv::threshold(input.cvMat(), output->cvMat(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY);
+	cv::threshold(input.cvMat(), output->cvMat(), thresh, 255, invert ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
 	// cvThreshold(input.iplImage(), output->iplImage(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY);
 #else
 	fatalError("threshold not implemented");

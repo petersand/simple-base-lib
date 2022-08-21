@@ -2,7 +2,6 @@
 #include <sbl/math/MathUtil.h>
 #ifdef USE_OPENCV
 	#include <opencv2/imgproc.hpp>
-	using namespace cv;
 #endif
 namespace sbl {
 
@@ -58,9 +57,9 @@ template aptr<ImageColorU> resize( const ImageColorU &input, int newWidth, int n
 template <typename ImageType> aptr<ImageType> shiftScale( const ImageType &input, float xOffset, float yOffset, float xScale, float yScale, int outputWidth, int outputHeight ) {
 	aptr<ImageType> output( new ImageType( outputWidth, outputHeight ) );
 #ifdef USE_OPENCV
-	float transform[2][3] = { { xScale, 0, xOffset }, { 0, yScale, yOffset } };
-	Mat map = Mat( 2, 3, CV_32FC1, transform );
-	warpAffine(input.cvMat(), output->cvMat(), map, Size(outputWidth, outputHeight), CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, BORDER_TRANSPARENT, cvScalarAll( 255 ));
+	float transform[2][3] = {{xScale, 0, xOffset}, {0, yScale, yOffset}};
+	cv::Mat map = cv::Mat(2, 3, CV_32FC1, transform);
+	cv::warpAffine(input.cvMat(), output->cvMat(), map, cv::Size(outputWidth, outputHeight), cv::INTER_CUBIC + cv::WARP_FILL_OUTLIERS, cv::BORDER_TRANSPARENT, cv::Scalar(255));
 #else
 	fatalError("warpAffine not implemented");
 #endif
@@ -75,9 +74,9 @@ template aptr<ImageColorU> shiftScale( const ImageColorU &input, float xOffset, 
 template <typename ImageType> aptr<ImageType> warpAffine( const ImageType &input, float xOffset, float yOffset, float x1, float y1, float x2, float y2, int outputWidth, int outputHeight, int fillColor ) {
 	aptr<ImageType> output( new ImageType( outputWidth, outputHeight ) );
 #ifdef USE_OPENCV
-	float transform[2][3] = { { x1, x2, xOffset }, { y1, y2, yOffset } };
-	Mat map = Mat( 2, 3, CV_32FC1, transform );
-	warpAffine(input.cvMat(), output->cvMat(), map, Size(outputWidth, outputHeight), CV_INTER_CUBIC + CV_WARP_FILL_OUTLIERS, BORDER_TRANSPARENT, cvScalarAll( fillColor ));
+	float transform[2][3] = {{x1, x2, xOffset}, {y1, y2, yOffset}};
+	cv::Mat map = cv::Mat(2, 3, CV_32FC1, transform);
+	cv::warpAffine(input.cvMat(), output->cvMat(), map, cv::Size(outputWidth, outputHeight), cv::INTER_CUBIC + cv::WARP_FILL_OUTLIERS, cv::BORDER_TRANSPARENT, cv::Scalar(fillColor));
 #else
 	fatalError("warpAffine not implemented");
 #endif

@@ -3,8 +3,11 @@
 #include <sbl/math/MathUtil.h>
 #include <sbl/math/VectorUtil.h>
 #include <sbl/system/Timer.h>
-#ifdef USE_OPENCV 
-    #include <opencv/cxcore.h>
+#ifdef USE_OPENCV
+    #include <opencv2/core.hpp>
+#endif
+#ifdef USE_OPENCV3
+    #include <opencv/cxcore.hpp>
 #endif 
 namespace sbl {
 
@@ -559,7 +562,7 @@ aptr<MatrixF> eigenSymmetric( const MatrixF &m, VectorF &eigenVals ) {
 	assertAlways( m.cols() == size );
 	assertAlways( eigenVals.length() == size );
 	aptr<MatrixF> eigenVects;
-#ifdef USE_OPENCV
+#ifdef USE_OPENCV3
 
 	// prepare data
 	// note: these don't need to be deallocated by us
