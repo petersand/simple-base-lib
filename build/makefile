@@ -1,7 +1,7 @@
 CPP=g++
 OPTLEVEL=2
 WARNFLAGS=-Wall -Wstrict-aliasing -Werror
-INCLUDE=-I../include -I$(OPENCV)/include
+INCLUDE=-I../include -I$(OPENCV)/include/opencv4
 OPTFLAGS=-msse2 -mfpmath=sse
 CONFIGFLAGS=-DUSE_OPENCV -DUSE_CDT #-DUSE_ZLIB #-D_DEBUG 
 
