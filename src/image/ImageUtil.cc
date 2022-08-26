@@ -223,7 +223,6 @@ template <typename ImageType> aptr<ImageType> threshold( const ImageType &input,
 	aptr<ImageType> output( new ImageType( width, height ) );
 #ifdef USE_OPENCV
 	cv::threshold(input.cvMat(), output->cvMat(), thresh, 255, invert ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
-	// cvThreshold(input.iplImage(), output->iplImage(), thresh, 255, invert ? CV_THRESH_BINARY_INV : CV_THRESH_BINARY);
 #else
 	fatalError("threshold not implemented");
 #endif
@@ -248,11 +247,10 @@ aptr<ImageGrayF> invert( const ImageGrayF &input ) {
 /// apply a box filter and then threshold
 aptr<ImageGrayU> blurBoxAndThreshold( const ImageGrayU &input, int boxSize, int thresh ) {
 	int width = input.width(), height = input.height();
-	aptr<ImageGrayU> output( new ImageGrayU( width, height ) );
+	aptr<ImageGrayU> output(new ImageGrayU(width, height));
 #ifdef USE_OPENCV
-	fatalError("blurBoxAndThreshold not implemented");
-	// cvSmooth( input.iplImage(), output->iplImage(), CV_BLUR, boxSize, boxSize);
-	// cvThreshold( output->iplImage(), output->iplImage(), thresh, 255, CV_THRESH_BINARY);
+	cv::blur(input.cvMat(), output->cvMat(), cv::Size(boxSize, boxSize));
+	cv::threshold(output->cvMat(), output->cvMat(), thresh, 255, cv::THRESH_BINARY);
 #else
 	fatalError("blurBoxAndThreshold not implemented");
 #endif
