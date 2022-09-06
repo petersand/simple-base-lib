@@ -171,11 +171,11 @@ void SerialPort::writeCommand(const String &command) {
 
 // sends a command or adds to outgoing queue
 void SerialPort::sendCommand(const String &command, bool waitForAck) {
-	if (m_outgoingMessages.count() == 0) {
-		writeCommand(command);
-	}
-	m_outgoingMessages.appendCopy(command);  // append even if sending immediately, since the first item in the list should always be the most recently sent (until ack'd)
 	if (waitForAck) {
+		if (m_outgoingMessages.count() == 0) {
+			writeCommand(command);
+		}
+		m_outgoingMessages.appendCopy(command);  // append even if sending immediately, since the last item in the list should always be the most recently sent (until ack'd)
 		while (m_outgoingMessages.count()) {  // once list is empty, our command has been ack'd
 			checkForMessages();
 			if (checkCommandEvents()) {
@@ -183,6 +183,8 @@ void SerialPort::sendCommand(const String &command, bool waitForAck) {
 				break;
 			}
 		}
+	} else {
+		writeCommand(command);  // just send message; don't care if ack'd
 	}
 }
 
