@@ -46,6 +46,9 @@ public:
 	// returns the number of checksum errors encountered since startup
 	inline int checksumErrorCount() const { return m_checksumErrorCount; }
 
+	// returns number of queued outgoing messages (waiting for acks)
+	int outgoingMessageCount() const { return m_outgoingMessages.count(); }
+
 private:
 
 	int m_port;  // file descriptor
