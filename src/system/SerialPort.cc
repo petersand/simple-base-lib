@@ -30,6 +30,8 @@ SerialPort::SerialPort(const String &portName, int baud, int bufferLength) {
     switch (baud) {
     case 9600: baudDef = B9600; break;
     case 38400: baudDef = B38400; break;
+    case 115200: baudDef = B115200; break;
+    case 500000: baudDef = B500000; break;
     default:
         disp(1, "baud not supported: %d", baud);
         m_port = -1;
