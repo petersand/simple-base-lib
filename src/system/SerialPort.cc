@@ -24,6 +24,7 @@ SerialPort::SerialPort(const String &portName, int baud, int bufferLength) {
 	m_verbose = true;
 	m_checksumErrorCount = 0;
 	m_lastCommandTime = 0;
+	m_checksumRequired = false;
 
 #ifndef WIN32
     int baudDef = -1;
@@ -200,14 +201,24 @@ void SerialPort::checkForMessages() {
 		}
 
 		// check checksum
-        int checksum = message.rightOfLast('|').toInt();
-        message = message.leftOfLast('|');
-        if (checksum != crc16(message.c_str())) {
-			disp(1, "checksum error on message: %s", message.c_str());
+		bool messageOk = true;
+		int barPos = message.lastCharPos('|');
+		if (barPos >= 0) {
+			int checksum = message.rightOf(barPos).toInt();
+			message = message.leftOf(barPos);
+			if (checksum != crc16(message.c_str())) {
+				disp(1, "checksum error on message: %s", message.c_str());
+				m_checksumErrorCount++;
+				messageOk = false;
+			}
+		} else if (m_checksumRequired) {
+			disp(1, "checksum missing on message: %s", message.c_str());
 			m_checksumErrorCount++;
+			messageOk = false;
+		}
 
-		// checksum is ok
-		} else {
+		// if checksum is ok, proceed with further parsing/processing of message
+		if (messageOk){
 
 			// check for ack
 			String deviceId = message.leftOfFirst(':');

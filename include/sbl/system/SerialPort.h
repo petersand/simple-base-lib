@@ -49,6 +49,9 @@ public:
 	// returns number of queued outgoing messages (waiting for acks)
 	int outgoingMessageCount() const { return m_outgoingMessages.count(); }
 
+	// set whether a checksum is required on incoming messages
+	void checksumRequired(bool required) { m_checksumRequired = required; }
+
 private:
 
 	int m_port;  // file descriptor
@@ -57,6 +60,7 @@ private:
 	int m_bufLen;
     bool m_checkForData;
 	bool m_verbose;
+	bool m_checksumRequired;
 	int m_checksumErrorCount;
 	double m_lastCommandTime;
 	SerialHandler *m_handler;
