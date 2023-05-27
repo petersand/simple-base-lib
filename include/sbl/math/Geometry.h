@@ -43,6 +43,11 @@ public:
 		y *= scalar;
 		return *this;
 	}
+
+	// returns true if all elements are zero
+	bool isZero() const {
+		return (x == 0) && (y == 0);
+	}
 };
 
 // rest of operators implemented as non-member functions
@@ -107,6 +112,11 @@ public:
 	// conversion function
 	_Point2<T> toXY() const {
 		return _Point2<T>(x, y);
+	}
+
+	// returns true if all elements are zero
+	bool isZero() const {
+		return (x == 0) && (y == 0) && (z == 0);
 	}
 };
 
