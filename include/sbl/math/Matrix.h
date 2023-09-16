@@ -2,6 +2,9 @@
 #define _SBL_MATRIX_H_
 #include <sbl/core/Display.h>
 #include <sbl/math/Vector.h>
+#ifdef USE_OPENCV
+	#include <opencv2/core.hpp>
+#endif
 #include <string.h> // for memcpy
 namespace sbl {
 
@@ -54,13 +57,17 @@ public:
 	T mean() const;
 	T sum() const;
 
+#ifdef USE_OPENCV
+	cv::Mat_<T> cvMat() const;
+#endif
+
 	/// number of bytes used by the matrix
 	// fix(later): does not handle contiguity
 	inline int memUsed() const { return sizeof(Matrix<T>) + sizeof(float) * m_rows * m_cols; }
 
 private:
 
-    /// size of the matrix
+	/// size of the matrix
 	int m_rows;
 	int m_cols;
 
@@ -219,6 +226,17 @@ template <typename T> T Matrix<T>::sum() const {
 	return (T) sum;
 }
 
+#ifdef USE_OPENCV
+template <typename T> cv::Mat_<T> Matrix<T>::cvMat() const {
+	cv::Mat_<T> mat(m_rows, m_cols);
+	for (int i = 0; i < m_rows; i++) { // fix(faster): could make faster if contiguous
+		for (int j = 0; j < m_cols; j++) {
+			mat.template at<T>(i, j) = m_data[ i ][ j ];
+		}
+	}
+	return mat;
+}
+#endif
 
 // common matrix types
 typedef Matrix<unsigned char> MatrixU;
