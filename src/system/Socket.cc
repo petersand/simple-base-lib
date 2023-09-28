@@ -75,42 +75,69 @@ Socket::Socket() {
 /// disconnect if connected
 Socket::~Socket() {
 #ifdef WIN32
-	if (m_sock)
-		closesocket( m_sock );
+	if (m_sock) {
+		closesocket(m_sock);
+	}
+#else
+	if (m_sock) {
+		close(m_sock);
+	}
 #endif
 }
 
 
-/// connect to the specified host+post
-bool Socket::connect( const char *hostName, int port ) {
-	socketSystemStart();
-
-	// get ip address from host name
-	hostent *he = NULL;
-	if ((he = gethostbyname( hostName )) == 0) 
-		warning( "Socket::connect hostname error: %d", errno );
-
-	// construct the address
-	disp( 1, "connecting to %s / %d", hostName, port );
+/// connect to the specified host and port (used for client)
+bool Socket::connect(const char *hostName, int port) {
+	disp(1, "connecting to %s / %d", hostName, port);
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
-	addr.sin_addr.s_addr = inet_addr( hostName ); // fix(later): assuming IP address not host name
-//	addr.sin_addr.s_addr = *((in_addr *) he->h_addr); // should be using this
-	memset(&(addr.sin_zero), 0, 8); 
+	if (hostName[0] == 0) {
+		addr.sin_addr.s_addr = INADDR_ANY;
+	} else {
+		addr.sin_addr.s_addr = inet_addr(hostName); // fix(later): assuming IP address not host name
+	}
+	memset(&(addr.sin_zero), 0, 8);
 
-	// create the socket
-	m_sock = (unsigned int) socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-#ifdef WIN32
-	if (m_sock == INVALID_SOCKET) {
-		warning( "Socket::connect creation error: %s", socketErrorText() );
+	// create/init/allocate the socket file descriptor
+	if (createSocket() == false) {
 		return false;
 	}
-#endif
 
 	// connect
-	if (::connect( m_sock, (sockaddr *) &addr, sizeof(sockaddr))) {
+	if (::connect(m_sock, (sockaddr *) &addr, sizeof(sockaddr))) {
 		warning( "Socket::connect connection error: %s", socketErrorText() );
+		return false;
+	}
+	return true;
+}
+
+
+/// listen for connections at the specified host and port (used for server)
+bool Socket::listen(const char *hostName, int port) {
+	disp(1, "connecting to %s / %d", hostName, port);
+	sockaddr_in addr;
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	if (hostName[0] == 0) {
+		addr.sin_addr.s_addr = INADDR_ANY;
+	} else {
+		addr.sin_addr.s_addr = inet_addr(hostName); // fix(later): assuming IP address not host name
+	}
+	memset(&(addr.sin_zero), 0, 8);
+
+	// create/init/allocate the socket file descriptor
+	if (createSocket() == false) {
+		return false;
+	}
+
+	// bind and listen for connections
+	if (bind(m_sock, (sockaddr *) &addr, sizeof(sockaddr))) {
+		warning( "Socket::listen bind error: %s", socketErrorText());
+		return false;
+	}
+	if (::listen(m_sock, 10)) {
+		warning( "Socket::listen listen error: %s", socketErrorText());
 		return false;
 	}
 	return true;
@@ -156,6 +183,21 @@ String Socket::read() {
 	}
 	buf[ pos ] = 0;
 	return String( buf );
+}
+
+
+bool Socket::createSocket() {
+	socketSystemStart();
+
+	// create the socket
+	m_sock = (int) socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#ifdef WIN32
+	if (m_sock == INVALID_SOCKET) {
+		warning("Socket::connect creation error: %s", socketErrorText());
+		return false;
+	}
+#endif
+	return true;
 }
 
 

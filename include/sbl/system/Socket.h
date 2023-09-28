@@ -14,24 +14,32 @@ public:
 	/// disconnect if connected
 	~Socket();
 
-	/// connect to the specified host+post
-	bool connect( const char *hostName, int port );
+	/// connect to the specified host and port (used for client)
+	bool connect(const char *hostName, int port);
+
+	/// listen for connections at the specified host and port (used for server)
+	bool listen(const char *hostName, int port);
 
 	/// write a text line (adds newline)
-	void write( String &s );
-	void write( const char *cstr );
+	void write(String &s);
+	void write(const char *cstr);
 
 	/// read a text line (removes newline); blocking
 	String read();
 
+	/// direct access to socket file descriptor
+	int fd() { return m_sock; }
+
 private:
 
+	bool createSocket();
+
 	// operating system socket handle
-	unsigned int m_sock;
+	int m_sock;
 
 	// disable copy constructor and assignment operator
-	Socket( const Socket &x );
-	Socket &operator=( const Socket &x );
+	Socket(const Socket &x);
+	Socket &operator=(const Socket &x);
 };
 
 
