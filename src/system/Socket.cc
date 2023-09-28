@@ -14,8 +14,12 @@
 	#include <string.h>
 	#include <stdio.h>
 	#include <errno.h>
+	#include <fcntl.h>
 #endif
 namespace sbl {
+
+
+// some code adapted from https://beej.us/guide/bgnet/html
 
 
 //-------------------------------------------
@@ -67,8 +71,8 @@ const char *socketErrorText() {
 
 
 /// create unconnected socket
-Socket::Socket() {
-	m_sock = 0;
+Socket::Socket(int fd) {
+	m_sock = fd;
 }
 
 
@@ -87,7 +91,7 @@ Socket::~Socket() {
 
 
 /// connect to the specified host and port (used for client)
-bool Socket::connect(const char *hostName, int port) {
+bool Socket::connect(const char *hostName, int port, bool nonBlocking) {
 	disp(1, "connecting to %s / %d", hostName, port);
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -103,6 +107,13 @@ bool Socket::connect(const char *hostName, int port) {
 	if (createSocket() == false) {
 		return false;
 	}
+
+	// set to non-blocking
+#ifdef WIN32
+	warning("non-blocking option not yet added for Windows");
+#else
+	fcntl(m_sock, F_SETFL, O_NONBLOCK);
+#endif
 
 	// connect
 	if (::connect(m_sock, (sockaddr *) &addr, sizeof(sockaddr))) {
@@ -141,6 +152,28 @@ bool Socket::listen(const char *hostName, int port) {
 		return false;
 	}
 	return true;
+}
+
+
+/// accept a new connection after listening; will block until connection arrives; returns client socket file descriptor
+int Socket::accept() {
+	struct sockaddr_storage clientAddr;
+#ifdef WIN32
+	int addrSize = sizeof clientAddr;
+#else
+	socklen_t addrSize = sizeof clientAddr;
+#endif
+	return (int) ::accept(m_sock, (struct sockaddr *) &clientAddr, &addrSize);
+}
+
+
+void Socket::write(void *data, int size) {
+	send(m_sock, (char *) data, size, 0);
+}
+
+
+int Socket::read(void *data, int size) {
+	return recv(m_sock, (char *) data, size, 0);
 }
 
 

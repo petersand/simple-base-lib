@@ -9,16 +9,23 @@ class Socket {
 public:
 
 	/// create unconnected socket
-	Socket();
+	Socket(int fd=0);
 
 	/// disconnect if connected
 	~Socket();
 
 	/// connect to the specified host and port (used for client)
-	bool connect(const char *hostName, int port);
+	bool connect(const char *hostName, int port, bool nonBlocking=false);
 
 	/// listen for connections at the specified host and port (used for server)
 	bool listen(const char *hostName, int port);
+
+	/// accept a new connection after listening; will block until connection arrives; returns client socket file descriptor
+	int accept();
+
+	void write(void *data, int size);
+
+	int read(void *data, int size);
 
 	/// write a text line (adds newline)
 	void write(String &s);
@@ -26,9 +33,6 @@ public:
 
 	/// read a text line (removes newline); blocking
 	String read();
-
-	/// direct access to socket file descriptor
-	int fd() { return m_sock; }
 
 private:
 
