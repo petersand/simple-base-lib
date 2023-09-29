@@ -92,7 +92,7 @@ Socket::~Socket() {
 
 /// connect to the specified host and port (used for client)
 bool Socket::connect(const char *hostName, int port, bool nonBlocking) {
-	disp(1, "connecting to %s / %d", hostName, port);
+	disp(1, "connecting to %s:%d", hostName, port);
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
@@ -126,7 +126,7 @@ bool Socket::connect(const char *hostName, int port, bool nonBlocking) {
 
 /// listen for connections at the specified host and port (used for server)
 bool Socket::listen(const char *hostName, int port) {
-	disp(1, "connecting to %s / %d", hostName, port);
+	disp(1, "listening on %s:%d", hostName, port);
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
