@@ -23,7 +23,7 @@ public:
 	/// accept a new connection after listening; will block until connection arrives; returns client socket file descriptor
 	int accept();
 
-	void write(void *data, int size);
+	void write(const void *data, int size);
 
 	int read(void *data, int size);
 

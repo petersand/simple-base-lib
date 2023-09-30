@@ -167,8 +167,8 @@ int Socket::accept() {
 }
 
 
-void Socket::write(void *data, int size) {
-	send(m_sock, (char *) data, size, 0);
+void Socket::write(const void *data, int size) {
+	send(m_sock, (const char *) data, size, 0);
 }
 
 
